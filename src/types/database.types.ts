@@ -29,7 +29,7 @@ export type CategoryType = "income" | "expense";
 
 export type AssetType = "bank" | "cash" | "gold" | "investment" | "other";
 
-export interface Profile {
+export type Profile = {
   id: string;
   display_name: string | null;
   currency: string;
@@ -39,7 +39,7 @@ export interface Profile {
   updated_at: string;
 }
 
-export interface Category {
+export type Category = {
   id: string;
   user_id: string;
   name: string;
@@ -53,7 +53,7 @@ export interface Category {
   updated_at: string;
 }
 
-export interface Transaction {
+export type Transaction = {
   id: string;
   user_id: string;
   type: TransactionType;
@@ -74,11 +74,11 @@ export interface Transaction {
   updated_at: string;
 }
 
-export interface TransactionWithCategory extends Transaction {
+export type TransactionWithCategory = Transaction & {
   category: Pick<Category, "id" | "name" | "expense_kind"> | null;
 }
 
-export interface Asset {
+export type Asset = {
   id: string;
   user_id: string;
   name: string;
@@ -90,7 +90,7 @@ export interface Asset {
   updated_at: string;
 }
 
-export interface DashboardSummary {
+export type DashboardSummary = {
   totalAssets: number;
   totalIncome: number;
   totalExpense: number;
@@ -99,33 +99,148 @@ export interface DashboardSummary {
   transactionCount: number;
 }
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
         Row: Profile;
-        Insert: Partial<Profile> & { id: string };
-        Update: Partial<Profile>;
+        Insert: {
+          id: string;
+          display_name?: string | null;
+          currency?: string;
+          timezone?: string;
+          month_start_day?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          display_name?: string | null;
+          currency?: string;
+          timezone?: string;
+          month_start_day?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       categories: {
         Row: Category;
-        Insert: Omit<Category, "id" | "created_at" | "updated_at"> & { id?: string };
-        Update: Partial<Category>;
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          type: CategoryType;
+          expense_kind?: ExpenseKind | null;
+          icon?: string | null;
+          color?: string | null;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          type?: CategoryType;
+          expense_kind?: ExpenseKind | null;
+          icon?: string | null;
+          color?: string | null;
+          is_active?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       transactions: {
         Row: Transaction;
-        Insert: Omit<Transaction, "id" | "created_at" | "updated_at" | "confirmed_at" | "deleted_at"> & {
+        Insert: {
           id?: string;
+          user_id: string;
+          type: TransactionType;
+          category_id?: string | null;
+          amount: number;
+          date: string;
+          payment_method?: PaymentMethod;
+          merchant?: string | null;
+          note?: string | null;
+          source?: TransactionSource;
+          status?: TransactionStatus;
+          ai_confidence?: number | null;
+          ai_raw_payload?: Record<string, unknown> | null;
+          duplicate_of_id?: string | null;
           confirmed_at?: string | null;
           deleted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
-        Update: Partial<Transaction>;
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: TransactionType;
+          category_id?: string | null;
+          amount?: number;
+          date?: string;
+          payment_method?: PaymentMethod;
+          merchant?: string | null;
+          note?: string | null;
+          source?: TransactionSource;
+          status?: TransactionStatus;
+          ai_confidence?: number | null;
+          ai_raw_payload?: Record<string, unknown> | null;
+          duplicate_of_id?: string | null;
+          confirmed_at?: string | null;
+          deleted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "transactions_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       assets: {
         Row: Asset;
-        Insert: Omit<Asset, "id" | "created_at" | "updated_at"> & { id?: string };
-        Update: Partial<Asset>;
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          type: AssetType;
+          value: number;
+          is_liquid?: boolean;
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          type?: AssetType;
+          value?: number;
+          is_liquid?: boolean;
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
     };
   };
 }
