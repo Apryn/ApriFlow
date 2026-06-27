@@ -70,6 +70,8 @@ export type Transaction = {
   duplicate_of_id: string | null;
   confirmed_at: string | null;
   deleted_at: string | null;
+  raw_input: string | null;
+  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -173,6 +175,8 @@ export type Database = {
           duplicate_of_id?: string | null;
           confirmed_at?: string | null;
           deleted_at?: string | null;
+          raw_input?: string | null;
+          reviewed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -193,6 +197,8 @@ export type Database = {
           duplicate_of_id?: string | null;
           confirmed_at?: string | null;
           deleted_at?: string | null;
+          raw_input?: string | null;
+          reviewed_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };

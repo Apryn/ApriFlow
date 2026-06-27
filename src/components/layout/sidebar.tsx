@@ -2,25 +2,70 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import {
   Home,
   PlusCircle,
   ArrowLeftRight,
   Wallet,
   Settings,
+  Sparkles,
+  ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
-const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/tambah", label: "Tambah Cepat", icon: PlusCircle },
-  { href: "/transaksi", label: "Transaksi", icon: ArrowLeftRight },
-  { href: "/aset", label: "Aset", icon: Wallet },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
-
 export function Sidebar() {
   const pathname = usePathname();
+  const [pendingCount, setPendingCount] = useState(0);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchPendingCount() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { count } = await supabase
+          .from("transactions")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("status", "pending_review")
+          .is("deleted_at", null);
+
+        setPendingCount(count ?? 0);
+      } catch (err) {
+        console.error("Error fetching pending count:", err);
+      }
+    }
+
+    fetchPendingCount();
+
+    const channel = supabase
+      .channel("sidebar-pending-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "transactions" },
+        () => {
+          fetchPendingCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
+  const navItems = [
+    { href: "/", label: "Dashboard", icon: Home },
+    { href: "/ai-chat", label: "Tanya AI (Chat)", icon: Sparkles },
+    { href: "/review", label: "Review Draf", icon: ClipboardList, badge: pendingCount > 0 ? pendingCount : undefined },
+    { href: "/tambah", label: "Tambah Cepat", icon: PlusCircle },
+    { href: "/transaksi", label: "Transaksi", icon: ArrowLeftRight },
+    { href: "/aset", label: "Aset", icon: Wallet },
+    { href: "/settings", label: "Settings", icon: Settings },
+  ];
 
   return (
     <aside className="hidden w-56 shrink-0 border-r border-gray-200 bg-white md:block">
@@ -31,7 +76,7 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="space-y-1 px-3">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = pathname === href;
           return (
             <Link
@@ -44,8 +89,13 @@ export function Sidebar() {
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
-              <Icon className="h-4 w-4" />
-              {label}
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="flex-1 truncate">{label}</span>
+              {badge !== undefined && (
+                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-teal-600 px-1 text-[10px] font-bold text-white shrink-0">
+                  {badge}
+                </span>
+              )}
             </Link>
           );
         })}
