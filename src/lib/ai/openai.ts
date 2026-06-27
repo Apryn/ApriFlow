@@ -12,116 +12,81 @@ export interface ParsedTransaction {
 }
 
 /**
- * Parses natural language input using Google Gemini API or a rule-based fallback.
+ * Parses natural language input using OpenAI API (GPT-4o-mini) or a rule-based fallback.
  */
-export async function parseTransactionWithAI(
+export async function parseTransactionWithOpenAI(
   input: string,
   categories: { name: string; type: "income" | "expense" }[]
 ): Promise<ParsedTransaction> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY is not defined in env. Using rule-based fallback parser.");
+    console.warn("OPENAI_API_KEY is not defined in env. Using rule-based fallback parser.");
     return parseTransactionFallback(input, categories);
   }
 
   const today = todayISO();
   const categoryNamesList = categories.map((c) => `${c.name} (${c.type})`).join(", ");
 
-  const prompt = `
-Anda adalah asisten keuangan AI yang bertugas mengekstrak detail transaksi keuangan dari teks bahasa natural.
+  const systemInstructions = `
+Anda adalah asisten keuangan AI yang bertugas mengekstrak detail transaksi keuangan dari teks bahasa natural ke dalam format JSON yang valid.
 Hari ini adalah tanggal: ${today}.
 
 DAFTAR KATEGORI YANG TERSEDIA:
 [${categoryNamesList}]
 
-INFORMASI PENTING:
-1. Ekstrak nominal uang (amount). Jika ada singkatan seperti "rb" artinya ribu, "jt" artinya juta.
-2. Tentukan jenis transaksi ("income" untuk pemasukan, "expense" untuk pengeluaran).
-3. Cari kategori yang paling cocok dari daftar kategori di atas. Jika tidak ada yang cocok, gunakan kategori "Lain-lain" sesuai jenis transaksinya.
-4. Tentukan metode pembayaran yang sesuai ("cash", "qris", "transfer", "debit_card", "credit_card", "ewallet", "other"). Default adalah "other".
-5. Ekstrak merchant (nama toko/tempat) jika disebutkan.
-6. Tentukan tanggal transaksi dalam format YYYY-MM-DD. Gunakan referensi hari ini (${today}) untuk menghitung tanggal relatif seperti "hari ini", "kemarin", "lusa", "2 hari lalu", dll.
-7. Buat catatan (note) singkat berisi deskripsi atau detail tambahan jika ada.
-8. Berikan nilai tingkat keyakinan (confidence) dari 0.0 sampai 1.0.
+Format JSON output harus memiliki kunci-kunci berikut dengan ketentuan:
+1. "type": jenis transaksi ("income" untuk pemasukan, "expense" untuk pengeluaran).
+2. "amount": nominal uang (integer). Ketahui bahwa singkatan seperti "rb"/"ribu" = ribu, "jt"/"juta" = juta, "k" = ribu.
+3. "category_name": nama kategori yang PALING cocok dari daftar kategori di atas. Jika tidak ada yang cocok, gunakan kategori "Lain-lain" sesuai jenis transaksinya.
+4. "payment_method": salah satu dari: "cash", "qris", "transfer", "debit_card", "credit_card", "ewallet", "other". Default: "other".
+5. "merchant": nama toko/tempat/sumber jika disebutkan (string atau null).
+6. "date": tanggal transaksi (format YYYY-MM-DD). Gunakan referensi hari ini (${today}) untuk menghitung tanggal relatif seperti "hari ini", "kemarin", "lusa", "2 hari lalu", dll.
+7. "note": catatan singkat deskripsi tambahan (string atau null).
+8. "confidence": tingkat keyakinan Anda terhadap ekstraksi ini (angka float dari 0.0 sampai 1.0).
 
-Teks input dari user: "${input}"
+Anda wajib menghasilkan JSON objek yang valid tanpa ada teks markdown di sekitarnya.
 `;
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                type: {
-                  type: "STRING",
-                  enum: ["income", "expense"],
-                },
-                amount: {
-                  type: "INTEGER",
-                },
-                category_name: {
-                  type: "STRING",
-                  description: "Harus sedekat mungkin dengan nama dari daftar kategori yang tersedia",
-                },
-                payment_method: {
-                  type: "STRING",
-                  enum: ["cash", "qris", "transfer", "debit_card", "credit_card", "ewallet", "other"],
-                },
-                merchant: {
-                  type: "STRING",
-                  nullable: true,
-                },
-                date: {
-                  type: "STRING",
-                  description: "Format YYYY-MM-DD",
-                },
-                note: {
-                  type: "STRING",
-                  nullable: true,
-                },
-                confidence: {
-                  type: "NUMBER",
-                },
-              },
-              required: ["type", "amount", "category_name", "payment_method", "date", "confidence"],
-            },
-          },
-        }),
-      }
-    );
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemInstructions },
+          { role: "user", content: `Teks input dari user: "${input}"` },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.1,
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Gemini API Error: ${response.statusText} - ${errorText}`);
+      throw new Error(`OpenAI API Error: ${response.statusText} - ${errorText}`);
     }
 
     const resJson = await response.json();
-    const textResult = resJson?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const textResult = resJson?.choices?.[0]?.message?.content;
     if (!textResult) {
-      throw new Error("No text response received from Gemini.");
+      throw new Error("No response received from OpenAI.");
     }
 
     const parsed = JSON.parse(textResult) as ParsedTransaction;
     return parsed;
   } catch (error) {
-    console.error("Failed to parse transaction with Gemini, falling back:", error);
+    console.error("Failed to parse transaction with OpenAI, falling back:", error);
     return parseTransactionFallback(input, categories);
   }
 }
 
 /**
- * Basic regex-based rule parser fallback when Gemini is unavailable.
+ * Basic regex-based rule parser fallback when OpenAI is unavailable.
  */
 function parseTransactionFallback(
   input: string,
@@ -144,7 +109,6 @@ function parseTransactionFallback(
 
   // 2. Determine Amount
   let amount = 0;
-  // Match patterns like "35rb", "35 ribu", "3 jt", "3 juta", "300.000", "300000"
   const amountMatch = normalized.match(/(\d+(?:[.,]\d+)?)\s*(ribu|rb|juta|jt|k)?/i);
   if (amountMatch) {
     let base = parseFloat(amountMatch[1].replace(",", "."));
@@ -174,19 +138,17 @@ function parseTransactionFallback(
   }
 
   // 4. Match Category
-  let category_name = type === "income" ? "Lain-lain" : "Lain-lain";
+  let category_name = "Lain-lain";
   
-  // Try to find matching category by checking keywords
   const matchedCat = categories.find((c) => {
     if (c.type !== type) return false;
     const catLower = c.name.toLowerCase();
     
-    // Custom keyword match rules
     if (catLower.includes("kopi") || catLower.includes("warkop") || catLower.includes("cafe")) {
       return normalized.includes("kopi") || normalized.includes("warkop") || normalized.includes("ngopi") || normalized.includes("cafe");
     }
     if (catLower.includes("bensin") || catLower.includes("pertamax") || catLower.includes("shell") || catLower.includes("pertalite")) {
-      return normalized.includes("bensin") || normalized.includes("bensin") || normalized.includes("pertamax") || normalized.includes("pertalite") || normalized.includes("bbm");
+      return normalized.includes("bensin") || normalized.includes("pertamax") || normalized.includes("pertalite") || normalized.includes("bbm");
     }
     if (catLower.includes("makan pokok") || catLower.includes("nasi") || catLower.includes("warteg")) {
       return normalized.includes("makan") || normalized.includes("nasi") || normalized.includes("warteg") || normalized.includes("sarapan") || normalized.includes("malam");
@@ -198,7 +160,6 @@ function parseTransactionFallback(
       return normalized.includes("belanja") || normalized.includes("online") || normalized.includes("tokped") || normalized.includes("shopee") || normalized.includes("lazada");
     }
     
-    // Fallback: check if category name is found directly in input text
     return normalized.includes(catLower);
   });
 
@@ -206,7 +167,7 @@ function parseTransactionFallback(
     category_name = matchedCat.name;
   }
 
-  // 5. Merchant extraction (e.g. "di indomaret" -> "indomaret")
+  // 5. Merchant extraction
   let merchant: string | null = null;
   const merchantMatch = normalized.match(/(?:di|ke|dari)\s+([a-z0-9\s]+?)(?:\s+(?:bayar|pake|hari|tanggal|kemarin|pada|$))/i);
   if (merchantMatch) {

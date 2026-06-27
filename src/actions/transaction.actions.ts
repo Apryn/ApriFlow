@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, getUser } from "@/lib/supabase/server";
 import { transactionSchema } from "@/lib/validators/transaction.schema";
-import { parseTransactionWithAI } from "@/lib/ai/gemini";
+import { parseTransactionWithOpenAI } from "@/lib/ai/openai";
 import { getCategories } from "@/lib/db/transactions";
 
 export type ActionState = {
@@ -118,7 +118,7 @@ export async function parseTransactionAction(
     const supabase = await createClient();
     const categories = await getCategories(user.id);
 
-    const parsed = await parseTransactionWithAI(text, categories);
+    const parsed = await parseTransactionWithOpenAI(text, categories);
 
     // Match parsed.category_name to user's category list
     let matchedCategory = categories.find(
