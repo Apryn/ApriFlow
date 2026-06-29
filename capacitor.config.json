@@ -1,0 +1,9 @@
+{
+  "appId": "com.apriflow.app",
+  "appName": "ApriFlow",
+  "webDir": "out",
+  "server": {
+    "url": "https://apriflow.vercel.app",
+    "cleartext": true
+  }
+}

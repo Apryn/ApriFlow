@@ -5,6 +5,7 @@ import { createClient, getUser } from "@/lib/supabase/server";
 import { transactionSchema } from "@/lib/validators/transaction.schema";
 import { parseTransactionWithOpenAI } from "@/lib/ai/openai";
 import { getCategories } from "@/lib/db/transactions";
+import { CacheRepository } from "@/services/ai-engine/repositories/cache.repository";
 
 export type ActionState = {
   error?: string;
@@ -44,6 +45,8 @@ export async function createTransaction(
 
   if (error) return { error: error.message };
 
+  await new CacheRepository().invalidate(user.id);
+
   revalidatePath("/");
   revalidatePath("/transaksi");
   return { success: true };
@@ -81,6 +84,8 @@ export async function updateTransaction(
 
   if (error) return { error: error.message };
 
+  await new CacheRepository().invalidate(user.id);
+
   revalidatePath("/");
   revalidatePath("/transaksi");
   return { success: true };
@@ -98,6 +103,8 @@ export async function deleteTransaction(id: string): Promise<ActionState> {
     .eq("user_id", user.id);
 
   if (error) return { error: error.message };
+
+  await new CacheRepository().invalidate(user.id);
 
   revalidatePath("/");
   revalidatePath("/transaksi");
@@ -188,6 +195,8 @@ export async function confirmTransactionAction(id: string): Promise<ActionState>
 
   if (error) return { error: error.message };
 
+  await new CacheRepository().invalidate(user.id);
+
   revalidatePath("/");
   revalidatePath("/transaksi");
   revalidatePath("/review");
@@ -253,6 +262,8 @@ export async function updatePendingTransactionAction(
     .eq("user_id", user.id);
 
   if (error) return { error: error.message };
+
+  await new CacheRepository().invalidate(user.id);
 
   revalidatePath("/");
   revalidatePath("/transaksi");

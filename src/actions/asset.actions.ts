@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient, getUser } from "@/lib/supabase/server";
 import { assetSchema } from "@/lib/validators/transaction.schema";
+import { CacheRepository } from "@/services/ai-engine/repositories/cache.repository";
 
 export type ActionState = {
   error?: string;
@@ -36,6 +37,8 @@ export async function createAsset(
   });
 
   if (error) return { error: error.message };
+
+  await new CacheRepository().invalidate(user.id);
 
   revalidatePath("/");
   revalidatePath("/aset");
@@ -72,6 +75,8 @@ export async function updateAsset(
 
   if (error) return { error: error.message };
 
+  await new CacheRepository().invalidate(user.id);
+
   revalidatePath("/");
   revalidatePath("/aset");
   return { success: true };
@@ -85,6 +90,8 @@ export async function deleteAsset(id: string): Promise<ActionState> {
   const { error } = await supabase.from("assets").delete().eq("id", id).eq("user_id", user.id);
 
   if (error) return { error: error.message };
+
+  await new CacheRepository().invalidate(user.id);
 
   revalidatePath("/");
   revalidatePath("/aset");

@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/input";
 
-const initialState: AuthState = {};
-
 export default function RegisterPage() {
-  const [state, formAction, pending] = useActionState(signUp, initialState);
+  const [state, formAction, pending] = useActionState(signUp, null);
 
   return (
     <Card>
@@ -18,7 +16,7 @@ export default function RegisterPage() {
       <p className="mt-1 text-sm text-gray-500">Mulai catat cash flow dengan lebih jelas.</p>
 
       <form action={formAction} className="mt-6 space-y-4">
-        {state.error && (
+        {state?.error && typeof state.error === "string" && (
           <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</div>
         )}
 

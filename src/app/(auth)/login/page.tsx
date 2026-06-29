@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/input";
 
-const initialState: AuthState = {};
-
 export default function LoginPage() {
-  const [state, formAction, pending] = useActionState(signIn, initialState);
+  const [state, formAction, pending] = useActionState(signIn, null);
 
   return (
     <Card>
@@ -18,7 +16,7 @@ export default function LoginPage() {
       <p className="mt-1 text-sm text-gray-500">Lanjutkan kelola cash flow-mu.</p>
 
       <form action={formAction} className="mt-6 space-y-4">
-        {state.error && (
+        {state?.error && typeof state.error === "string" && (
           <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</div>
         )}
 

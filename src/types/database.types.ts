@@ -238,6 +238,203 @@ export type Database = {
         };
         Relationships: [];
       };
+      budgets: {
+        Row: {
+          id: string;
+          user_id: string;
+          category_id: string;
+          amount: number;
+          period: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          category_id: string;
+          amount: number;
+          period?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          category_id?: string;
+          amount?: number;
+          period?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "budgets_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      goals: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          target_amount: number;
+          current_amount: number;
+          target_date: string | null;
+          notes: string | null;
+          is_completed: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          target_amount: number;
+          current_amount?: number;
+          target_date?: string | null;
+          notes?: string | null;
+          is_completed?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          target_amount?: number;
+          current_amount?: number;
+          target_date?: string | null;
+          notes?: string | null;
+          is_completed?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      ai_prompts: {
+        Row: {
+          id: string;
+          name: string;
+          version: string;
+          prompt_text: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          version?: string;
+          prompt_text: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          version?: string;
+          prompt_text?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      financial_profiles: {
+        Row: {
+          user_id: string;
+          income_frequency: string | null;
+          expected_payday: number | null;
+          preferred_payment_method: string | null;
+          weekend_spend_ratio: number | null;
+          top_expense_hour: number | null;
+          top_expense_category: string | null;
+          last_updated: string;
+        };
+        Insert: {
+          user_id: string;
+          income_frequency?: string | null;
+          expected_payday?: number | null;
+          preferred_payment_method?: string | null;
+          weekend_spend_ratio?: number | null;
+          top_expense_hour?: number | null;
+          top_expense_category?: string | null;
+          last_updated?: string;
+        };
+        Update: {
+          user_id?: string;
+          income_frequency?: string | null;
+          expected_payday?: number | null;
+          preferred_payment_method?: string | null;
+          weekend_spend_ratio?: number | null;
+          top_expense_hour?: number | null;
+          top_expense_category?: string | null;
+          last_updated?: string;
+        };
+        Relationships: [];
+      };
+      analysis_caches: {
+        Row: {
+          user_id: string;
+          year: number;
+          month: number;
+          scope: string;
+          report_data: Record<string, unknown>;
+          is_stale: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          year: number;
+          month: number;
+          scope: string;
+          report_data: Record<string, unknown>;
+          is_stale?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          year?: number;
+          month?: number;
+          scope?: string;
+          report_data?: Record<string, unknown>;
+          is_stale?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      analytics_events: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          event_name: string;
+          metadata: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          event_name: string;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          event_name?: string;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
