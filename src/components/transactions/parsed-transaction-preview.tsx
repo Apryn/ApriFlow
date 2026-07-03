@@ -14,7 +14,10 @@ import type { Category, TransactionWithCategory } from "@/types/database.types";
 
 interface ParsedTransactionPreviewProps {
   transactionId: string;
-  onActionComplete?: () => void;
+  onActionComplete?: (
+    action: "confirm" | "ignore" | "update",
+    details?: { amount: number; categoryName: string; type: string }
+  ) => void;
 }
 
 export function ParsedTransactionPreview({ transactionId, onActionComplete }: ParsedTransactionPreviewProps) {
@@ -77,7 +80,14 @@ export function ParsedTransactionPreview({ transactionId, onActionComplete }: Pa
     try {
       const res = await confirmTransactionAction(transactionId);
       if (res.error) throw new Error(res.error);
-      if (onActionComplete) onActionComplete();
+      
+      const categoryName = transaction?.category?.name || "Lain-lain";
+      const txAmount = transaction?.amount || 0;
+      const txType = transaction?.type || "expense";
+
+      if (onActionComplete) {
+        onActionComplete("confirm", { amount: txAmount, categoryName, type: txType });
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Gagal mengonfirmasi transaksi.";
       setError(errorMessage);
@@ -91,7 +101,7 @@ export function ParsedTransactionPreview({ transactionId, onActionComplete }: Pa
     try {
       const res = await ignoreTransactionAction(transactionId);
       if (res.error) throw new Error(res.error);
-      if (onActionComplete) onActionComplete();
+      if (onActionComplete) onActionComplete("ignore");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Gagal mengabaikan transaksi.";
       setError(errorMessage);
@@ -108,11 +118,17 @@ export function ParsedTransactionPreview({ transactionId, onActionComplete }: Pa
     formData.set("amount", String(amount));
     formData.set("type", type);
 
+    const categoryId = formData.get("category_id") as string;
+    const cat = categories.find((c) => c.id === categoryId);
+    const categoryName = cat?.name || "Lain-lain";
+
     try {
       const res = await updatePendingTransactionAction(transactionId, {}, formData);
       if (res.error) throw new Error(res.error);
       setIsEditing(false);
-      if (onActionComplete) onActionComplete();
+      if (onActionComplete) {
+        onActionComplete("update", { amount, categoryName, type });
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Gagal menyimpan perubahan.";
       setError(errorMessage);

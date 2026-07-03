@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatRupiah } from "@/lib/utils/currency";
 import type { DashboardSummary } from "@/types/database.types";
 import { TrendingDown, TrendingUp, Wallet, Scale } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
 
 interface SummaryCardsProps {
   summary: DashboardSummary;
@@ -35,46 +36,52 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50">
-              <TrendingUp className="h-4 w-4 text-teal-600" />
+        <Card className="p-3.5 flex flex-col justify-between">
+          <div className="flex items-start justify-between gap-1">
+            <CardTitle className="text-xs font-semibold text-gray-500">Pemasukan</CardTitle>
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-50">
+              <TrendingUp className="h-3.5 w-3.5 text-teal-600" />
             </div>
-            <CardTitle>Pemasukan</CardTitle>
           </div>
-          <CardValue className="text-teal-600">{formatRupiah(summary.totalIncome)}</CardValue>
+          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-bold tracking-tight text-teal-600 break-all">
+            {formatRupiah(summary.totalIncome)}
+          </CardValue>
         </Card>
 
-        <Card>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50">
-              <TrendingDown className="h-4 w-4 text-red-500" />
+        <Card className="p-3.5 flex flex-col justify-between">
+          <div className="flex items-start justify-between gap-1">
+            <CardTitle className="text-xs font-semibold text-gray-500">Pengeluaran</CardTitle>
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-red-50">
+              <TrendingDown className="h-3.5 w-3.5 text-red-500" />
             </div>
-            <CardTitle>Pengeluaran</CardTitle>
           </div>
-          <CardValue className="text-red-500">{formatRupiah(summary.totalExpense)}</CardValue>
+          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-bold tracking-tight text-red-500 break-all">
+            {formatRupiah(summary.totalExpense)}
+          </CardValue>
         </Card>
 
-        <Card>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-              <Scale className="h-4 w-4 text-blue-600" />
+        <Card className="p-3.5 flex flex-col justify-between">
+          <div className="flex items-start justify-between gap-1">
+            <CardTitle className="text-xs font-semibold text-gray-500">Sisa bersih</CardTitle>
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+              <Scale className="h-3.5 w-3.5 text-blue-600" />
             </div>
-            <CardTitle>Sisa bersih</CardTitle>
           </div>
-          <CardValue className={summary.netBalance >= 0 ? "text-teal-600" : "text-red-500"}>
+          <CardValue className={cn("mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-bold tracking-tight break-all", summary.netBalance >= 0 ? "text-teal-600" : "text-red-500")}>
             {formatRupiah(summary.netBalance)}
           </CardValue>
         </Card>
 
-        <Card>
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
-              <Wallet className="h-4 w-4 text-purple-600" />
+        <Card className="p-3.5 flex flex-col justify-between">
+          <div className="flex items-start justify-between gap-1">
+            <CardTitle className="text-xs font-semibold text-gray-500">Aset valid</CardTitle>
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-50">
+              <Wallet className="h-3.5 w-3.5 text-purple-600" />
             </div>
-            <CardTitle>Aset valid</CardTitle>
           </div>
-          <CardValue>{formatRupiah(summary.totalAssets)}</CardValue>
+          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-bold tracking-tight text-gray-900 break-all">
+            {formatRupiah(summary.totalAssets)}
+          </CardValue>
         </Card>
       </div>
 

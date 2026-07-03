@@ -15,5 +15,5 @@ export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingEle
 }
 
 export function CardValue({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("mt-1 text-2xl font-semibold text-gray-900", className)} {...props} />;
+  return <p className={cn("mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 tracking-tight", className)} {...props} />;
 }

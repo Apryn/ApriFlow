@@ -270,3 +270,99 @@ export async function updatePendingTransactionAction(
   revalidatePath("/review");
   return { success: true };
 }
+
+export async function createQuickTransactionAction(
+  text: string
+): Promise<{ error?: string; success?: boolean; transactionId?: string; transactionSummary?: string }> {
+  const user = await getUser();
+  if (!user) return { error: "Sesi tidak valid. Silakan login ulang." };
+
+  if (!text || text.trim().length === 0) {
+    return { error: "Input teks tidak boleh kosong." };
+  }
+
+  try {
+    const supabase = await createClient();
+    const categories = await getCategories(user.id);
+
+    const parsed = await parseTransactionWithOpenAI(text, categories);
+
+    let matchedCategory = categories.find(
+      (c) => c.name.toLowerCase() === parsed.category_name.toLowerCase() && c.type === parsed.type
+    );
+
+    if (!matchedCategory) {
+      matchedCategory = categories.find(
+        (c) => c.type === parsed.type && c.name.toLowerCase().includes(parsed.category_name.toLowerCase())
+      );
+    }
+
+    if (!matchedCategory) {
+      matchedCategory = categories.find((c) => c.name === "Lain-lain" && c.type === parsed.type);
+    }
+
+    const { data: transaction, error: insertError } = await supabase
+      .from("transactions")
+      .insert({
+        user_id: user.id,
+        type: parsed.type,
+        category_id: matchedCategory?.id ?? null,
+        amount: parsed.amount,
+        date: parsed.date,
+        payment_method: parsed.payment_method,
+        merchant: parsed.merchant,
+        note: parsed.note,
+        source: "manual",
+        status: "confirmed",
+        confirmed_at: new Date().toISOString(),
+        raw_input: text,
+        ai_confidence: parsed.confidence,
+        ai_raw_payload: parsed as unknown as Record<string, unknown>,
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      return { error: insertError.message };
+    }
+
+    await new CacheRepository().invalidate(user.id);
+
+    revalidatePath("/");
+    revalidatePath("/transaksi");
+
+    const flowSign = parsed.type === "income" ? "+" : "-";
+    const summary = `${parsed.type === "income" ? "Pemasukan" : "Pengeluaran"} ${matchedCategory?.name || "Lain-lain"} ${flowSign}Rp ${parsed.amount.toLocaleString("id-ID")}${parsed.merchant ? ` di ${parsed.merchant}` : ""}`;
+
+    return { 
+      success: true, 
+      transactionId: transaction.id, 
+      transactionSummary: summary 
+    };
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : "Gagal memproses teks.";
+    console.error("Error in createQuickTransactionAction:", err);
+    return { error: errorMessage };
+  }
+}
+
+export async function undoQuickTransactionAction(id: string): Promise<ActionState> {
+  const user = await getUser();
+  if (!user) return { error: "Sesi tidak valid. Silakan login ulang." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("transactions")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) return { error: error.message };
+
+  await new CacheRepository().invalidate(user.id);
+
+  revalidatePath("/");
+  revalidatePath("/transaksi");
+  return { success: true };
+}
+

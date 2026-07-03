@@ -18,15 +18,71 @@ export async function parseTransactionWithOpenAI(
   input: string,
   categories: { name: string; type: "income" | "expense" }[]
 ): Promise<ParsedTransaction> {
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  const today = todayISO();
+  const categoryNamesList = categories.map((c) => `${c.name} (${c.type})`).join(", ");
+
+  if (geminiKey) {
+    const systemInstructions = `
+Anda adalah asisten keuangan AI yang bertugas mengekstrak detail transaksi keuangan dari teks bahasa natural ke dalam format JSON yang valid.
+Hari ini adalah tanggal: ${today}.
+
+DAFTAR KATEGORI YANG TERSEDIA:
+[${categoryNamesList}]
+
+Format JSON output harus memiliki kunci-kunci berikut dengan ketentuan:
+1. "type": jenis transaksi ("income" untuk pemasukan, "expense" untuk pengeluaran).
+2. "amount": nominal uang (integer). Ketahui bahwa singkatan seperti "rb"/"ribu" = ribu, "jt"/"juta" = juta, "k" = ribu.
+3. "category_name": nama kategori yang PALING cocok dari daftar kategori di atas. Jika tidak ada yang cocok, gunakan kategori "Lain-lain" sesuai jenis transaksinya.
+4. "payment_method": salah satu dari: "cash", "qris", "transfer", "debit_card", "credit_card", "ewallet", "other". Default: "other".
+5. "merchant": nama toko/tempat/sumber jika disebutkan (string atau null).
+6. "date": tanggal transaksi (format YYYY-MM-DD). Gunakan referensi hari ini (${today}) untuk menghitung tanggal relatif seperti "hari ini", "kemarin", "lusa", "2 hari lalu", dll.
+7. "note": catatan singkat deskripsi tambahan (string atau null).
+8. "confidence": tingkat keyakinan Anda terhadap ekstraksi ini (angka float dari 0.0 sampai 1.0).
+
+Anda wajib menghasilkan JSON objek yang valid sesuai spesifikasi di atas.
+`;
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: {
+              parts: [{ text: systemInstructions }]
+            },
+            contents: [
+              { role: "user", parts: [{ text: `Teks input dari user: "${input}"` }] }
+            ],
+            generationConfig: {
+              temperature: 0.1,
+              responseMimeType: "application/json",
+            },
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const resJson = await response.json();
+        const textResult = resJson?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textResult) {
+          const parsed = JSON.parse(textResult) as ParsedTransaction;
+          return parsed;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to parse transaction with Gemini, falling back:", error);
+    }
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    console.warn("OPENAI_API_KEY is not defined in env. Using rule-based fallback parser.");
+    console.warn("Neither GEMINI_API_KEY nor OPENAI_API_KEY is defined. Using rule-based fallback parser.");
     return parseTransactionFallback(input, categories);
   }
-
-  const today = todayISO();
-  const categoryNamesList = categories.map((c) => `${c.name} (${c.type})`).join(", ");
 
   const systemInstructions = `
 Anda adalah asisten keuangan AI yang bertugas mengekstrak detail transaksi keuangan dari teks bahasa natural ke dalam format JSON yang valid.

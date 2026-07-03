@@ -18,18 +18,35 @@ import { cn } from "@/lib/utils/cn";
 export function Sidebar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
+    async function getUserId() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUserId(session.user.id);
+        } else {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) setUserId(user.id);
+        }
+      } catch (err) {
+        console.error("Error getting user session:", err);
+      }
+    }
+    getUserId();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!userId) return;
+
     async function fetchPendingCount() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
         const { count } = await supabase
           .from("transactions")
           .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id)
+          .eq("user_id", userId)
           .eq("status", "pending_review")
           .is("deleted_at", null);
 
@@ -40,22 +57,7 @@ export function Sidebar() {
     }
 
     fetchPendingCount();
-
-    const channel = supabase
-      .channel("sidebar-pending-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "transactions" },
-        () => {
-          fetchPendingCount();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
+  }, [supabase, pathname, userId]);
 
   const navItems = [
     { href: "/", label: "Dashboard", icon: Home },

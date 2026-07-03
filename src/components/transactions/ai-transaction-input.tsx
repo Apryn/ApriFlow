@@ -311,7 +311,7 @@ export function AITransactionInput() {
   };
 
   return (
-    <div className="flex flex-col h-[75vh] max-h-[700px] border border-gray-100 bg-white rounded-2xl shadow-sm overflow-hidden relative">
+    <div className="flex flex-col h-[calc(100dvh-230px)] md:h-[70vh] md:max-h-[700px] border border-gray-100 bg-white rounded-2xl shadow-sm overflow-hidden relative">
       {/* Hidden file input for OCR scan */}
       <input
         type="file"
@@ -383,13 +383,25 @@ export function AITransactionInput() {
                   <div className="mt-2 text-left">
                     <ParsedTransactionPreview
                       transactionId={msg.parsedTransactionId}
-                      onActionComplete={() => {
+                      onActionComplete={(action, details) => {
                         setMessages((prev) =>
-                          prev.map((m) =>
-                            m.id === msg.id
-                              ? { ...m, text: "Transaksi telah berhasil disimpan!" }
-                              : m
-                          )
+                          prev.map((m) => {
+                            if (m.id === msg.id) {
+                              let text = "Transaksi berhasil disimpan!";
+                              if (action === "confirm" || action === "update") {
+                                const flowStr = details?.type === "income" ? "Pemasukan" : "Pengeluaran";
+                                text = `Transaksi ${flowStr} sebesar ${formatRupiah(details?.amount || 0)} berhasil disimpan ke Kategori ${details?.categoryName || "Lain-lain"}.`;
+                              } else if (action === "ignore") {
+                                text = "Draft transaksi diabaikan.";
+                              }
+                              return {
+                                id: m.id,
+                                sender: m.sender,
+                                text,
+                              };
+                            }
+                            return m;
+                          })
                         );
                       }}
                     />

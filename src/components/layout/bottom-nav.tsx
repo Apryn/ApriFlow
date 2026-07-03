@@ -10,18 +10,35 @@ import { cn } from "@/lib/utils/cn";
 export function BottomNav() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
+    async function getUserId() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          setUserId(session.user.id);
+        } else {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) setUserId(user.id);
+        }
+      } catch (err) {
+        console.error("Error getting user session:", err);
+      }
+    }
+    getUserId();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!userId) return;
+
     async function fetchPendingCount() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
         const { count } = await supabase
           .from("transactions")
           .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id)
+          .eq("user_id", userId)
           .eq("status", "pending_review")
           .is("deleted_at", null);
 
@@ -32,22 +49,7 @@ export function BottomNav() {
     }
 
     fetchPendingCount();
-
-    const channel = supabase
-      .channel("bottom-pending-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "transactions" },
-        () => {
-          fetchPendingCount();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
+  }, [supabase, pathname, userId]);
 
   const navItems = [
     { href: "/", label: "Dashboard", icon: Home },
@@ -58,8 +60,8 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 backdrop-blur-md md:hidden">
-      <div className="mx-auto flex max-w-lg items-center justify-around px-2 pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 pb-[calc(env(safe-area-inset-bottom,0px)+6px)] pt-1.5 backdrop-blur-md md:hidden">
+      <div className="mx-auto flex max-w-lg items-center justify-around px-2">
         {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = pathname === href;
           return (
