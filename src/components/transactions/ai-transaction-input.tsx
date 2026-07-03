@@ -311,7 +311,7 @@ export function AITransactionInput() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-230px)] md:h-[70vh] md:max-h-[700px] border border-gray-100 bg-white rounded-2xl shadow-sm overflow-hidden relative">
+    <div className="flex flex-col h-[calc(100dvh-315px)] md:h-[70vh] md:max-h-[700px] border border-gray-100 bg-white rounded-2xl shadow-sm overflow-hidden relative">
       {/* Hidden file input for OCR scan */}
       <input
         type="file"
