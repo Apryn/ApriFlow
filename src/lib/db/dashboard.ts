@@ -29,7 +29,7 @@ export async function getDashboardSummary(
   let totalExpense = 0;
   const categoryTotals = new Map<
     string,
-    { total: number; expense_kind: ExpenseKind | null }
+    { total: number; count: number; expense_kind: ExpenseKind | null }
   >();
 
   for (const tx of transactionsResult.data ?? []) {
@@ -42,9 +42,11 @@ export async function getDashboardSummary(
       if (category) {
         const existing = categoryTotals.get(category.name) ?? {
           total: 0,
+          count: 0,
           expense_kind: category.expense_kind,
         };
         existing.total += amount;
+        existing.count += 1;
         categoryTotals.set(category.name, existing);
       }
     }

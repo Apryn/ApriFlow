@@ -97,7 +97,7 @@ export type DashboardSummary = {
   totalIncome: number;
   totalExpense: number;
   netBalance: number;
-  topExpenseCategories: { name: string; total: number; expense_kind: ExpenseKind | null }[];
+  topExpenseCategories: { name: string; total: number; count: number; expense_kind: ExpenseKind | null }[];
   transactionCount: number;
 }
 
