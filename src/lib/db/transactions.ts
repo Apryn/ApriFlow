@@ -16,7 +16,45 @@ export async function getCategories(userId: string, type?: "income" | "expense")
 
   const { data, error } = await query;
   if (error) throw error;
-  return data ?? [];
+
+  const categories = data ?? [];
+
+  // Lazy check and seed 'Jajan' category for this user if it doesn't exist
+  const hasJajan = categories.some(
+    (c) => c.name.toLowerCase() === "jajan" && c.type === "expense"
+  );
+
+  if (!hasJajan && (!type || type === "expense")) {
+    try {
+      const { data: newCat, error: insertError } = await supabase
+        .from("categories")
+        .insert({
+          user_id: userId,
+          name: "Jajan",
+          type: "expense",
+          expense_kind: "bocor",
+          sort_order: 3,
+        })
+        .select()
+        .single();
+
+      if (!insertError && newCat) {
+        categories.push(newCat as Category);
+        categories.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+        // Auto-reclassify any existing transactions containing "jajan" in note or merchant
+        await supabase
+          .from("transactions")
+          .update({ category_id: newCat.id })
+          .eq("user_id", userId)
+          .or("note.ilike.%jajan%,merchant.ilike.%jajan%");
+      }
+    } catch (err) {
+      console.error("Failed to lazy seed Jajan category:", err);
+    }
+  }
+
+  return categories;
 }
 
 export async function getTransactions(
