@@ -70,14 +70,14 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden w-56 shrink-0 border-r border-gray-200 bg-white md:block">
+    <aside className="hidden w-56 shrink-0 border-r-2 border-black bg-zinc-900 md:block">
       <div className="px-4 py-6">
         <Link href="/" className="block">
-          <span className="text-xl font-bold text-teal-600">ApriFlow</span>
-          <p className="mt-0.5 text-xs text-gray-500">Cash flow pribadi</p>
+          <span className="text-xl font-black tracking-tight text-teal-400">ApriFlow</span>
+          <p className="mt-0.5 text-xs text-zinc-400">Cash flow pribadi</p>
         </Link>
       </div>
-      <nav className="space-y-1 px-3">
+      <nav className="space-y-1.5 px-3">
         {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = pathname === href;
           return (
@@ -85,16 +85,21 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all border-2",
                 isActive
-                  ? "bg-teal-50 text-teal-700"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-teal-400 text-black border-black shadow-[2px_2px_0px_0px_#000]"
+                  : "text-zinc-400 border-transparent hover:bg-zinc-800 hover:text-zinc-100"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span className="flex-1 truncate">{label}</span>
               {badge !== undefined && (
-                <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-teal-600 px-1 text-[10px] font-bold text-white shrink-0">
+                <span className={cn(
+                  "flex h-5 min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-extrabold shrink-0",
+                  isActive
+                    ? "bg-black text-white"
+                    : "bg-teal-400 text-black border border-black shadow-[1px_1px_0px_0px_#000]"
+                )}>
                   {badge}
                 </span>
               )}

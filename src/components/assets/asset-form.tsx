@@ -35,7 +35,7 @@ export function AssetForm({ asset }: AssetFormProps) {
   return (
     <form action={formAction} className="space-y-4">
       {state.error && (
-        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</div>
+        <div className="rounded-xl bg-zinc-950 px-4 py-3 text-sm text-red-400 border-2 border-red-500/50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold">{state.error}</div>
       )}
 
       <div>

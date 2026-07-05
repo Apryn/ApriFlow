@@ -60,7 +60,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white/95 pb-[calc(env(safe-area-inset-bottom,0px)+6px)] pt-1.5 backdrop-blur-md md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-black bg-zinc-900/95 pb-[calc(env(safe-area-inset-bottom,0px)+6px)] pt-1.5 backdrop-blur-md md:hidden">
       <div className="mx-auto flex max-w-lg items-center justify-around px-2">
         {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = pathname === href;
@@ -70,18 +70,18 @@ export function BottomNav() {
               href={href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-0.5 py-2 text-xs transition-colors relative",
-                isActive ? "text-teal-600" : "text-gray-500 hover:text-gray-700"
+                isActive ? "text-teal-400 font-extrabold" : "text-zinc-400 hover:text-zinc-200"
               )}
             >
               <div className="relative">
-                <Icon className={cn("h-5 w-5", isActive && "stroke-[2.5]")} />
+                <Icon className={cn("h-5 w-5", isActive && "stroke-[3]")} />
                 {badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-teal-600 px-1 text-[9px] font-bold text-white">
+                  <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-teal-400 px-1 text-[9px] font-extrabold text-black border border-black shadow-[1px_1px_0px_0px_#000]">
                     {badge}
                   </span>
                 )}
               </div>
-              <span className="font-medium">{label}</span>
+              <span className="font-bold">{label}</span>
             </Link>
           );
         })}

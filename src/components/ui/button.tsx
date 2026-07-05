@@ -10,16 +10,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-teal-600 text-white hover:bg-teal-700 active:bg-teal-800",
-  secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300",
-  ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
-  danger: "bg-red-50 text-red-600 hover:bg-red-100",
+  primary: "bg-teal-400 text-black border-2 border-black hover:bg-teal-300 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
+  secondary: "bg-zinc-800 text-zinc-100 border-2 border-black hover:bg-zinc-700 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
+  ghost: "bg-transparent text-zinc-400 border-2 border-transparent hover:bg-zinc-900 hover:text-zinc-100",
+  danger: "bg-red-500 text-black border-2 border-black hover:bg-red-400 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2.5 text-sm",
-  lg: "px-5 py-3 text-base",
+  sm: "px-3 py-1.5 text-xs rounded-xl",
+  md: "px-4 py-2.5 text-sm rounded-xl",
+  lg: "px-5 py-3 text-base rounded-2xl",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -28,8 +28,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors",
-        "disabled:opacity-50 disabled:pointer-events-none",
+        "inline-flex items-center justify-center gap-2 font-bold transition-all",
+        "disabled:opacity-50 disabled:pointer-events-none focus:outline-none",
         variants[variant],
         sizes[size],
         className

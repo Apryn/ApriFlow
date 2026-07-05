@@ -6,8 +6,8 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
     <input
       ref={ref}
       className={cn(
-        "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900",
-        "placeholder:text-gray-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20",
+        "w-full rounded-xl border-2 border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100",
+        "placeholder:text-zinc-600 focus:border-teal-400 focus:outline-none transition-all focus:shadow-[2px_2px_0px_0px_#000]",
         className
       )}
       {...props}
@@ -24,8 +24,8 @@ export const Textarea = forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900",
-      "placeholder:text-gray-400 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20",
+      "w-full rounded-xl border-2 border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100",
+      "placeholder:text-zinc-600 focus:border-teal-400 focus:outline-none transition-all focus:shadow-[2px_2px_0px_0px_#000]",
       "min-h-[80px] resize-y",
       className
     )}
@@ -37,7 +37,7 @@ Textarea.displayName = "Textarea";
 
 export const Label = forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
   ({ className, ...props }, ref) => (
-    <label ref={ref} className={cn("mb-1.5 block text-sm font-medium text-gray-700", className)} {...props} />
+    <label ref={ref} className={cn("mb-1.5 block text-sm font-bold text-zinc-300", className)} {...props} />
   )
 );
 
@@ -48,8 +48,8 @@ export const Select = forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<H
     <select
       ref={ref}
       className={cn(
-        "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900",
-        "focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20",
+        "w-full rounded-xl border-2 border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100",
+        "focus:border-teal-400 focus:outline-none transition-all focus:shadow-[2px_2px_0px_0px_#000]",
         className
       )}
       {...props}

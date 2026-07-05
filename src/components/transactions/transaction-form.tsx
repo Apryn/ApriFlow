@@ -48,7 +48,7 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
   return (
     <form action={formAction} className="space-y-4">
       {state.error && (
-        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{state.error}</div>
+        <div className="rounded-xl bg-zinc-950 px-4 py-3 text-sm text-red-400 border-2 border-red-500/50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold">{state.error}</div>
       )}
 
       <div>
@@ -57,12 +57,12 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
           {(["expense", "income"] as const).map((t) => (
             <label
               key={t}
-              className={`flex cursor-pointer items-center justify-center rounded-xl border py-2.5 text-sm font-medium transition-colors ${
+              className={`flex cursor-pointer items-center justify-center rounded-xl border-2 py-2.5 text-sm font-bold transition-all ${
                 type === t
                   ? t === "expense"
-                    ? "border-red-300 bg-red-50 text-red-700"
-                    : "border-teal-300 bg-teal-50 text-teal-700"
-                  : "border-gray-200 bg-white text-gray-600"
+                    ? "border-black bg-rose-500 text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none"
+                    : "border-black bg-teal-400 text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none"
+                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:bg-zinc-900"
               }`}
             >
               <input

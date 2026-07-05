@@ -103,22 +103,22 @@ export function TransactionList({ transactions }: TransactionListProps) {
   return (
     <div className="space-y-5">
       {/* Monthly Summary Bar */}
-      <Card className="p-3.5 bg-white border border-gray-100/50 shadow-sm rounded-2xl grid grid-cols-3 gap-2 text-center divide-x divide-gray-100">
+      <Card className="p-3.5 bg-zinc-900 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] rounded-2xl grid grid-cols-3 gap-2 text-center divide-x divide-black">
         <div className="space-y-0.5">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Total Masuk</span>
-          <span className="block text-xs sm:text-sm font-bold text-teal-600 truncate">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Total Masuk</span>
+          <span className="block text-xs sm:text-sm font-extrabold text-teal-400 truncate">
             {formatRupiah(totalIncome)}
           </span>
         </div>
         <div className="space-y-0.5">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Total Keluar</span>
-          <span className="block text-xs sm:text-sm font-bold text-red-500 truncate">
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Total Keluar</span>
+          <span className="block text-xs sm:text-sm font-extrabold text-rose-400 truncate">
             {formatRupiah(totalExpense)}
           </span>
         </div>
         <div className="space-y-0.5">
-          <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Sisa Bersih</span>
-          <span className={`block text-xs sm:text-sm font-bold truncate ${netBalance >= 0 ? "text-teal-600" : "text-red-500"}`}>
+          <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Sisa Bersih</span>
+          <span className={`block text-xs sm:text-sm font-extrabold truncate ${netBalance >= 0 ? "text-teal-400" : "text-rose-400"}`}>
             {formatRupiah(netBalance)}
           </span>
         </div>
@@ -132,41 +132,41 @@ export function TransactionList({ transactions }: TransactionListProps) {
         return (
           <div key={dateStr} className="space-y-1.5 animate-in fade-in duration-300">
             {/* Group Header with Date and Totals */}
-            <div className="flex items-center justify-between px-1.5 text-xs font-semibold">
-              <span className="text-gray-500 font-medium">{dateLabel}</span>
+            <div className="flex items-center justify-between px-1.5 text-[10px] font-bold uppercase tracking-wider">
+              <span className="text-zinc-400">{dateLabel}</span>
               <div className="flex gap-2">
                 {group.totalIncome > 0 && (
-                  <span className="text-teal-600">+{formatRupiah(group.totalIncome)}</span>
+                  <span className="text-teal-400">+{formatRupiah(group.totalIncome)}</span>
                 )}
                 {group.totalExpense > 0 && (
-                  <span className="text-red-500">-{formatRupiah(group.totalExpense)}</span>
+                  <span className="text-rose-400">-{formatRupiah(group.totalExpense)}</span>
                 )}
               </div>
             </div>
 
             {/* Group Card holding all transactions for this day */}
-            <Card className="p-0 overflow-hidden divide-y divide-gray-100/70 border border-gray-100/50">
+            <Card className="p-0 overflow-hidden divide-y divide-black border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
               {group.items.map((tx) => (
-                <div key={tx.id} className="flex items-center justify-between p-3.5 gap-3 hover:bg-gray-50/40 transition-colors duration-150">
+                <div key={tx.id} className="flex items-center justify-between p-3.5 gap-3 hover:bg-zinc-800/40 transition-colors duration-150">
                   {/* Clickable Area pointing to Edit Page */}
                   <Link href={`/transaksi/${tx.id}/edit`} className="min-w-0 flex-1 flex items-center gap-2.5 group/link">
                     {/* Minimalist Dot Indicator */}
-                    <span className={`h-2 w-2 shrink-0 rounded-full ${
-                      tx.type === "income" ? "bg-teal-500" : "bg-red-500"
+                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full border border-black ${
+                      tx.type === "income" ? "bg-teal-400" : "bg-rose-500"
                     }`} />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-semibold text-sm text-gray-900 truncate group-hover/link:text-teal-600 transition-colors">
+                        <span className="font-bold text-sm text-zinc-100 truncate group-hover/link:text-teal-400 transition-colors">
                           {tx.merchant || tx.note || "Tanpa keterangan"}
                         </span>
                         {tx.category && (
-                          <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full shrink-0">
+                          <span className="text-[9px] bg-zinc-800 text-zinc-400 border border-zinc-700 px-1.5 py-0.5 rounded-full shrink-0 font-bold">
                             {tx.category.name}
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-gray-400 mt-0.5 truncate">
+                      <p className="text-[11px] text-zinc-500 mt-0.5 truncate">
                         {getPaymentMethodLabel(tx.payment_method)}
                         {tx.merchant && tx.note && ` · ${tx.note}`}
                       </p>
@@ -175,8 +175,8 @@ export function TransactionList({ transactions }: TransactionListProps) {
 
                   {/* Right side: Amount and low-contrast delete action */}
                   <div className="flex items-center gap-2.5 shrink-0">
-                    <span className={`text-xs min-[360px]:text-sm font-bold ${
-                      tx.type === "income" ? "text-teal-600" : "text-red-500"
+                    <span className={`text-xs min-[360px]:text-sm font-extrabold ${
+                      tx.type === "income" ? "text-teal-400" : "text-rose-400"
                     }`}>
                       {tx.type === "income" ? "+" : "-"}
                       {formatRupiah(tx.amount)}
@@ -185,7 +185,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 w-7 p-0 rounded-lg hover:bg-red-50 hover:text-red-500 text-gray-300 transition-colors shrink-0"
+                      className="h-7 w-7 p-0 rounded-lg hover:bg-red-500/20 border border-transparent hover:border-red-500/30 hover:text-red-400 text-zinc-600 transition-all shrink-0 active:translate-y-0 active:translate-x-0"
                       aria-label="Hapus"
                       disabled={isPending && deletingId === tx.id}
                       onClick={() => handleDelete(tx.id)}

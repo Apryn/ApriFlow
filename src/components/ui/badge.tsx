@@ -4,11 +4,11 @@ import type { HTMLAttributes } from "react";
 type BadgeVariant = "default" | "success" | "warning" | "danger" | "info";
 
 const variants: Record<BadgeVariant, string> = {
-  default: "bg-gray-100 text-gray-700",
-  success: "bg-teal-50 text-teal-700",
-  warning: "bg-amber-50 text-amber-700",
-  danger: "bg-red-50 text-red-700",
-  info: "bg-blue-50 text-blue-700",
+  default: "bg-zinc-800 text-zinc-100 border border-zinc-700",
+  success: "bg-teal-400 text-black border border-black",
+  warning: "bg-amber-400 text-black border border-black",
+  danger: "bg-red-500 text-black border border-black",
+  info: "bg-blue-400 text-black border border-black",
 };
 
 export function Badge({
@@ -19,7 +19,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold shrink-0 shadow-[1px_1px_0px_0px_#000]",
         variants[variant],
         className
       )}

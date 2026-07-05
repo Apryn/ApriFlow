@@ -20,13 +20,13 @@ export function PendingTransactionList({ initialTransactions, categories }: Pend
 
   if (transactions.length === 0) {
     return (
-      <Card className="border-dashed border-teal-200 bg-teal-50/20 text-center py-12 px-4 space-y-3">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-50">
-          <ClipboardCheck className="h-6 w-6 text-teal-600" />
+      <Card className="border-2 border-dashed border-teal-500 bg-zinc-900 text-center py-12 px-4 space-y-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 border-2 border-black shadow-[2px_2px_0px_0px_#000]">
+          <ClipboardCheck className="h-6 w-6 text-teal-400" />
         </div>
-        <div className="space-y-1">
-          <h3 className="text-sm font-semibold text-teal-800">Antrean Review Bersih!</h3>
-          <p className="text-xs text-teal-600 max-w-xs mx-auto">
+        <div className="space-y-1.5">
+          <h3 className="text-sm font-black text-teal-400 uppercase tracking-wider">Antrean Review Bersih!</h3>
+          <p className="text-xs text-zinc-400 max-w-xs mx-auto leading-relaxed">
             Semua draf transaksi AI sudah dikonfirmasi atau diabaikan. Dashboard Anda sinkron sepenuhnya.
           </p>
         </div>
@@ -36,7 +36,7 @@ export function PendingTransactionList({ initialTransactions, categories }: Pend
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between text-xs font-semibold text-gray-500">
+      <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-zinc-400 px-1">
         <span>Ada {transactions.length} draf menunggu persetujuan Anda</span>
       </div>
 

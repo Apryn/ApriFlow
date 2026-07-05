@@ -45,39 +45,40 @@ export function AssetList({ assets, totalAssets }: AssetListProps) {
 
   return (
     <div className="space-y-4">
-      <Card className="bg-teal-50 ring-teal-100">
-        <p className="text-sm text-teal-700">Total aset valid</p>
-        <p className="mt-1 text-2xl font-bold text-teal-800">{formatRupiah(totalAssets)}</p>
+      <Card className="bg-zinc-900 border-2 border-black shadow-[3px_3px_0px_0px_#a855f7]">
+        <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Total aset valid</p>
+        <p className="mt-1 text-2xl font-black text-purple-400">{formatRupiah(totalAssets)}</p>
       </Card>
 
       <div className="space-y-3">
         {assets.map((asset) => (
-          <Card key={asset.id} className="p-4">
+          <Card key={asset.id} className="p-4 border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="font-semibold text-gray-900">{asset.name}</p>
+                  <p className="font-bold text-zinc-100">{asset.name}</p>
                   {asset.is_liquid && <Badge variant="info">Likuid</Badge>}
                 </div>
-                <p className="mt-0.5 text-sm text-gray-500">{getAssetTypeLabel(asset.type)}</p>
-                {asset.note && <p className="mt-1 text-xs text-gray-400">{asset.note}</p>}
+                <p className="mt-0.5 text-xs text-zinc-500 font-bold uppercase tracking-wider">{getAssetTypeLabel(asset.type)}</p>
+                {asset.note && <p className="mt-1 text-xs text-zinc-500">{asset.note}</p>}
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-900">{formatRupiah(asset.value)}</p>
+                <p className="font-extrabold text-zinc-100">{formatRupiah(asset.value)}</p>
                 <div className="mt-2 flex justify-end gap-1">
                   <Link href={`/aset/${asset.id}/edit`}>
-                    <Button variant="ghost" size="sm" aria-label="Edit">
-                      <Pencil className="h-4 w-4" />
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 border border-transparent hover:border-zinc-700 text-zinc-500 hover:text-zinc-300" aria-label="Edit">
+                      <Pencil className="h-3.5 w-3.5" />
                     </Button>
                   </Link>
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="h-8 w-8 p-0 border border-transparent hover:border-red-500/30 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
                     aria-label="Hapus"
                     disabled={isPending && deletingId === asset.id}
                     onClick={() => handleDelete(asset.id)}
                   >
-                    <Trash2 className="h-4 w-4 text-red-500" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </div>
