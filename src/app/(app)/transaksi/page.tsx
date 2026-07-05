@@ -9,18 +9,33 @@ import { Badge } from "@/components/ui/badge";
 import { PlusCircle, X } from "lucide-react";
 import { redirect } from "next/navigation";
 
+import { TransactionFilterBar } from "@/components/transactions/transaction-filter-bar";
+
 interface TransaksiPageProps {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    query?: string;
+    start_date?: string;
+    end_date?: string;
+  }>;
 }
 
 export default async function TransaksiPage({ searchParams }: TransaksiPageProps) {
   const user = await getUser();
   if (!user) redirect("/login");
 
-  const { category } = await searchParams;
+  const { category, query, start_date, end_date } = await searchParams;
 
   const { year, month } = getCurrentMonthRange();
-  const transactions = await getTransactions(user.id, year, month, category);
+  const transactions = await getTransactions(
+    user.id,
+    year,
+    month,
+    category,
+    query,
+    start_date,
+    end_date
+  );
 
   return (
     <>
@@ -48,6 +63,11 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
           </Link>
         }
       />
+
+      <div className="my-4">
+        <TransactionFilterBar />
+      </div>
+
       <TransactionList transactions={transactions} />
     </>
   );

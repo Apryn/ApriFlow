@@ -61,7 +61,10 @@ export async function getTransactions(
   userId: string,
   year: number,
   month: number,
-  categoryName?: string
+  categoryName?: string,
+  searchQuery?: string,
+  startDate?: string,
+  endDate?: string
 ): Promise<TransactionWithCategory[]> {
   const supabase = await createClient();
   const start = `${year}-${String(month).padStart(2, "0")}-01`;
@@ -77,12 +80,26 @@ export async function getTransactions(
     .select(selectStr)
     .eq("user_id", userId)
     .eq("status", "confirmed")
-    .is("deleted_at", null)
-    .gte("date", start)
-    .lte("date", end);
+    .is("deleted_at", null);
+
+  if (startDate) {
+    query = query.gte("date", startDate);
+  } else {
+    query = query.gte("date", start);
+  }
+
+  if (endDate) {
+    query = query.lte("date", endDate);
+  } else {
+    query = query.lte("date", end);
+  }
 
   if (categoryName) {
     query = query.eq("categories.name", categoryName);
+  }
+
+  if (searchQuery) {
+    query = query.or(`note.ilike.%${searchQuery}%,merchant.ilike.%${searchQuery}%`);
   }
 
   const { data, error } = await query

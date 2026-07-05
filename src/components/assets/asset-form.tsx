@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import { createAsset, updateAsset, type ActionState } from "@/actions/asset.actions";
 import { ASSET_TYPES } from "@/lib/constants/asset-types";
 import { formatRupiahInput, parseRupiahInput } from "@/lib/utils/currency";
@@ -95,8 +96,17 @@ export function AssetForm({ asset }: AssetFormProps) {
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Tambah Aset"}
+      <Button type="submit" size="lg" className="w-full shadow-[3px_3px_0px_0px_#000]" disabled={pending}>
+        {pending ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin mr-1" />
+            Menyimpan...
+          </>
+        ) : isEdit ? (
+          "Simpan Perubahan"
+        ) : (
+          "Tambah Aset"
+        )}
       </Button>
     </form>
   );

@@ -8,6 +8,7 @@ import { PAYMENT_METHODS } from "@/lib/constants/payment-methods";
 import { formatRupiahInput, parseRupiahInput } from "@/lib/utils/currency";
 import { todayISO } from "@/lib/utils/date";
 import type { Category, TransactionWithCategory } from "@/types/database.types";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface TransactionFormProps {
@@ -161,8 +162,17 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Simpan Transaksi"}
+      <Button type="submit" size="lg" className="w-full shadow-[3px_3px_0px_0px_#000]" disabled={pending}>
+        {pending ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin mr-1" />
+            Menyimpan...
+          </>
+        ) : isEdit ? (
+          "Simpan Perubahan"
+        ) : (
+          "Simpan Transaksi"
+        )}
       </Button>
     </form>
   );
