@@ -22,21 +22,32 @@ export async function getCategories(userId: string, type?: "income" | "expense")
 export async function getTransactions(
   userId: string,
   year: number,
-  month: number
+  month: number,
+  categoryName?: string
 ): Promise<TransactionWithCategory[]> {
   const supabase = await createClient();
   const start = `${year}-${String(month).padStart(2, "0")}-01`;
   const lastDay = new Date(year, month, 0).getDate();
   const end = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
 
-  const { data, error } = await supabase
+  const selectStr = categoryName
+    ? "*, category:categories!inner(id, name, expense_kind)"
+    : "*, category:categories(id, name, expense_kind)";
+
+  let query = supabase
     .from("transactions")
-    .select("*, category:categories(id, name, expense_kind)")
+    .select(selectStr)
     .eq("user_id", userId)
     .eq("status", "confirmed")
     .is("deleted_at", null)
     .gte("date", start)
-    .lte("date", end)
+    .lte("date", end);
+
+  if (categoryName) {
+    query = query.eq("categories.name", categoryName);
+  }
+
+  const { data, error } = await query
     .order("date", { ascending: false })
     .order("created_at", { ascending: false });
 

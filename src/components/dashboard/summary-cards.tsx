@@ -4,6 +4,7 @@ import { formatRupiah } from "@/lib/utils/currency";
 import type { DashboardSummary } from "@/types/database.types";
 import { TrendingDown, TrendingUp, Wallet, Scale } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import Link from "next/link";
 
 interface SummaryCardsProps {
   summary: DashboardSummary;
@@ -91,10 +92,10 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           <ul className="mt-4 space-y-2.5 divide-y divide-zinc-800">
             {summary.topExpenseCategories.map((cat, i) => (
               <li key={cat.name} className={cn("flex items-center justify-between text-sm pt-2.5", i === 0 && "pt-0")}>
-                <div className="flex items-center gap-2">
-                  <span className="text-zinc-300 font-bold">{cat.name}</span>
-                  <span className="text-[10px] font-black bg-zinc-850 text-teal-400 px-1.5 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_#000]">{cat.count}x</span>
-                </div>
+                <Link href={`/transaksi?category=${encodeURIComponent(cat.name)}`} className="flex items-center gap-2 group cursor-pointer">
+                  <span className="text-zinc-300 font-bold group-hover:text-teal-400 transition-colors">{cat.name}</span>
+                  <span className="text-[10px] font-black bg-zinc-850 text-teal-400 px-1.5 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_#000] group-hover:bg-zinc-800 transition-all">{cat.count}x</span>
+                </Link>
                 <span className="font-extrabold text-zinc-100">{formatRupiah(cat.total)}</span>
               </li>
             ))}
