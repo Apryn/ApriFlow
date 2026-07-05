@@ -3,7 +3,7 @@ import { Sidebar } from "./sidebar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       <Sidebar />
       <div className="flex flex-1 flex-col">
         <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 px-4 pb-3 pt-[calc(env(safe-area-inset-top,0px)+12px)] backdrop-blur-md md:hidden">
