@@ -4,6 +4,8 @@ ApriFlow adalah aplikasi pencatatan keuangan (cash flow) pribadi yang pintar, pr
 
 Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi Web (PWA / Desktop)**.
 
+[**Unduh Aplikasi Android (APK)**](https://github.com/Apryn/ApriFlow/releases/latest) | [**Akses Aplikasi Web (PWA)**](https://apriflow.vercel.app)
+
 ---
 
 ## Tampilan Aplikasi (Screenshots)
