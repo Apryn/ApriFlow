@@ -1,4 +1,4 @@
-# ApriFlow — Asisten Finansial Pribadi Pintar & Terkontrol
+# <img src="public/app-icon.png" width="38" align="center" alt="ApriFlow Icon"/> ApriFlow — Asisten Finansial Pribadi Pintar & Terkontrol
 
 ApriFlow adalah aplikasi pencatatan keuangan (cash flow) pribadi yang pintar, praktis, dan aman. Aplikasi ini dirancang agar Anda dapat mengontrol keuangan dengan mudah menggunakan teknologi AI dan fitur perlindungan privasi saldo secara instan.
 
