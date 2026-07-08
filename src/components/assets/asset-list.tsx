@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { deleteAsset } from "@/actions/asset.actions";
 import { getAssetTypeLabel } from "@/lib/constants/asset-types";
 import { formatRupiah } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { Asset } from "@/types/database.types";
 import { Pencil, Trash2, Wallet } from "lucide-react";
 
@@ -20,6 +21,7 @@ interface AssetListProps {
 
 export function AssetList({ assets, totalAssets }: AssetListProps) {
   const router = useRouter();
+  const { mask } = useVisibility();
   const [isPending, startTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -47,7 +49,7 @@ export function AssetList({ assets, totalAssets }: AssetListProps) {
     <div className="space-y-4">
       <Card className="bg-zinc-900 border-2 border-black shadow-[3px_3px_0px_0px_#a855f7]">
         <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Total aset valid</p>
-        <p className="mt-1 text-2xl font-black text-purple-400">{formatRupiah(totalAssets)}</p>
+        <p className="mt-1 text-2xl font-black text-purple-400">{mask(totalAssets)}</p>
       </Card>
 
       <div className="space-y-3">
@@ -63,7 +65,7 @@ export function AssetList({ assets, totalAssets }: AssetListProps) {
                 {asset.note && <p className="mt-1 text-xs text-zinc-500">{asset.note}</p>}
               </div>
               <div className="text-right">
-                <p className="font-extrabold text-zinc-100">{formatRupiah(asset.value)}</p>
+                <p className="font-extrabold text-zinc-100">{mask(asset.value)}</p>
                 <div className="mt-2 flex justify-end gap-1">
                   <Link href={`/aset/${asset.id}/edit`}>
                     <Button variant="ghost" size="sm" className="h-8 w-8 p-0 border border-transparent hover:border-zinc-700 text-zinc-500 hover:text-zinc-300" aria-label="Edit">

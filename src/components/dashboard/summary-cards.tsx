@@ -1,6 +1,9 @@
+"use client";
+
 import { Card, CardTitle, CardValue } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatRupiah } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { DashboardSummary } from "@/types/database.types";
 import { TrendingDown, TrendingUp, Wallet, Scale } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
@@ -23,6 +26,7 @@ function getCashFlowStatus(net: number, expense: number, income: number) {
 }
 
 export function SummaryCards({ summary }: SummaryCardsProps) {
+  const { mask } = useVisibility();
   const status = getCashFlowStatus(
     summary.netBalance,
     summary.totalExpense,
@@ -45,7 +49,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
             </div>
           </div>
           <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-teal-400 break-all">
-            {formatRupiah(summary.totalIncome)}
+            {mask(summary.totalIncome)}
           </CardValue>
         </Card>
 
@@ -57,7 +61,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
             </div>
           </div>
           <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-rose-400 break-all">
-            {formatRupiah(summary.totalExpense)}
+            {mask(summary.totalExpense)}
           </CardValue>
         </Card>
 
@@ -69,7 +73,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
             </div>
           </div>
           <CardValue className={cn("mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight break-all", summary.netBalance >= 0 ? "text-teal-400" : "text-rose-400")}>
-            {formatRupiah(summary.netBalance)}
+            {mask(summary.netBalance)}
           </CardValue>
         </Card>
 
@@ -81,7 +85,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
             </div>
           </div>
           <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-zinc-100 break-all">
-            {formatRupiah(summary.totalAssets)}
+            {mask(summary.totalAssets)}
           </CardValue>
         </Card>
       </div>
@@ -96,7 +100,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
                   <span className="text-zinc-300 font-bold group-hover:text-teal-400 transition-colors">{cat.name}</span>
                   <span className="text-[10px] font-black bg-zinc-850 text-teal-400 px-1.5 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_#000] group-hover:bg-zinc-800 transition-all">{cat.count}x</span>
                 </Link>
-                <span className="font-extrabold text-zinc-100">{formatRupiah(cat.total)}</span>
+                <span className="font-extrabold text-zinc-100">{mask(cat.total)}</span>
               </li>
             ))}
           </ul>
@@ -105,3 +109,4 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
     </div>
   );
 }
+

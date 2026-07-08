@@ -38,7 +38,7 @@ export function BottomNav() {
         const { count } = await supabase
           .from("transactions")
           .select("*", { count: "exact", head: true })
-          .eq("user_id", userId)
+          .eq("user_id", userId as string)
           .eq("status", "pending_review")
           .is("deleted_at", null);
 
