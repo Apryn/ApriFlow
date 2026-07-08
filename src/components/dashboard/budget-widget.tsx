@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { formatRupiah } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { TransactionWithCategory } from "@/types/database.types";
 import { BudgetAnalyzer } from "@/services/ai-engine/modules/budget-analyzer";
 import type { Budget } from "@/services/ai-engine/types";
@@ -16,10 +17,12 @@ interface BudgetWidgetProps {
 }
 
 export function BudgetWidget({ budgets, transactions }: BudgetWidgetProps) {
+  const { mask } = useVisibility();
   const analysis = useMemo(() => {
     const analyzer = new BudgetAnalyzer();
     return analyzer.analyze(budgets, transactions);
   }, [budgets, transactions]);
+
 
   if (budgets.length === 0) {
     return (
@@ -80,7 +83,7 @@ export function BudgetWidget({ budgets, transactions }: BudgetWidgetProps) {
                   )}
                 </span>
                 <span className="text-zinc-400">
-                  <span className={textColor}>{formatRupiah(status.spentAmount)}</span> / {formatRupiah(status.budgetAmount)}
+                  <span className={textColor}>{mask(status.spentAmount)}</span> / {mask(status.budgetAmount)}
                 </span>
               </div>
 

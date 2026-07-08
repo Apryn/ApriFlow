@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { upsertBudgetAction, deleteBudgetAction } from "@/actions/budget.actions";
 import { formatRupiah, formatRupiahInput, parseRupiahInput } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { Category } from "@/types/database.types";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/input";
@@ -15,6 +16,7 @@ interface BudgetManagerFormProps {
 }
 
 export function BudgetManagerForm({ categories, initialBudgets }: BudgetManagerFormProps) {
+  const { mask } = useVisibility();
   const [budgets, setBudgets] = useState<any[]>(initialBudgets);
   const [selectedCatId, setSelectedCatId] = useState("");
   const [amountDisplay, setAmountDisplay] = useState("");
@@ -171,7 +173,7 @@ export function BudgetManagerForm({ categories, initialBudgets }: BudgetManagerF
                 <div>
                   <p className="font-bold text-zinc-100">{b.category?.name}</p>
                   <p className="text-xs text-zinc-400 font-medium mt-0.5">
-                    Limit bulanan: <span className="text-teal-400 font-extrabold">{formatRupiah(b.amount)}</span>
+                    Limit bulanan: <span className="text-teal-400 font-extrabold">{mask(b.amount)}</span>
                   </p>
                 </div>
                 <Button

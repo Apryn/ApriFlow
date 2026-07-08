@@ -92,6 +92,8 @@ export type Asset = {
   updated_at: string;
 }
 
+export type Goal = Database["public"]["Tables"]["goals"]["Row"];
+
 export type DashboardSummary = {
   totalAssets: number;
   totalIncome: number;

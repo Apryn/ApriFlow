@@ -7,6 +7,11 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export const metadata: Metadata = {
   title: "ApriFlow — Cash flow pribadi",
   description: "Cash flow pribadi lebih jelas, otomatis, dan terkontrol.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "ApriFlow",
+  },
 };
 
 export const viewport: Viewport = {

@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { deleteTransaction } from "@/actions/transaction.actions";
 import { getPaymentMethodLabel } from "@/lib/constants/payment-methods";
 import { formatRupiah } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { TransactionWithCategory } from "@/types/database.types";
 import { ArrowLeftRight, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -44,6 +45,7 @@ function getFriendlyDateLabel(dateStr: string): string {
 
 export function TransactionList({ transactions }: TransactionListProps) {
   const router = useRouter();
+  const { mask } = useVisibility();
   const [isPending, startTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -107,19 +109,19 @@ export function TransactionList({ transactions }: TransactionListProps) {
         <div className="space-y-0.5">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Total Masuk</span>
           <span className="block text-xs sm:text-sm font-extrabold text-teal-400 truncate">
-            {formatRupiah(totalIncome)}
+            {mask(totalIncome)}
           </span>
         </div>
         <div className="space-y-0.5">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Total Keluar</span>
           <span className="block text-xs sm:text-sm font-extrabold text-rose-400 truncate">
-            {formatRupiah(totalExpense)}
+            {mask(totalExpense)}
           </span>
         </div>
         <div className="space-y-0.5">
           <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Sisa Bersih</span>
           <span className={`block text-xs sm:text-sm font-extrabold truncate ${netBalance >= 0 ? "text-teal-400" : "text-rose-400"}`}>
-            {formatRupiah(netBalance)}
+            {mask(netBalance)}
           </span>
         </div>
       </Card>
@@ -136,10 +138,10 @@ export function TransactionList({ transactions }: TransactionListProps) {
               <span className="text-zinc-400">{dateLabel}</span>
               <div className="flex gap-2">
                 {group.totalIncome > 0 && (
-                  <span className="text-teal-400">+{formatRupiah(group.totalIncome)}</span>
+                  <span className="text-teal-400">+{mask(group.totalIncome)}</span>
                 )}
                 {group.totalExpense > 0 && (
-                  <span className="text-rose-400">-{formatRupiah(group.totalExpense)}</span>
+                  <span className="text-rose-400">-{mask(group.totalExpense)}</span>
                 )}
               </div>
             </div>
@@ -179,7 +181,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                       tx.type === "income" ? "text-teal-400" : "text-rose-400"
                     }`}>
                       {tx.type === "income" ? "+" : "-"}
-                      {formatRupiah(tx.amount)}
+                      {mask(tx.amount)}
                     </span>
 
                     <Button

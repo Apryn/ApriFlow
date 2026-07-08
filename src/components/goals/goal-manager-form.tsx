@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { createGoalAction, updateGoalProgressAction, deleteGoalAction } from "@/actions/goal.actions";
 import { formatRupiah, formatRupiahInput, parseRupiahInput } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { Goal } from "@/types/database.types";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
@@ -14,6 +15,7 @@ interface GoalManagerFormProps {
 }
 
 export function GoalManagerForm({ initialGoals }: GoalManagerFormProps) {
+  const { mask } = useVisibility();
   const [goals, setGoals] = useState<Goal[]>(initialGoals);
   const [name, setName] = useState("");
   const [targetAmountDisplay, setTargetAmountDisplay] = useState("");
@@ -266,7 +268,7 @@ export function GoalManagerForm({ initialGoals }: GoalManagerFormProps) {
                     <div className="flex items-center justify-between text-xs font-bold text-zinc-400">
                       <span>Progres ({percent}%)</span>
                       <span>
-                        <span className="text-purple-400">{formatRupiah(current)}</span> / {formatRupiah(target)}
+                        <span className="text-purple-400">{mask(current)}</span> / {mask(target)}
                       </span>
                     </div>
 

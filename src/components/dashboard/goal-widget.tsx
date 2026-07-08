@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatRupiah } from "@/lib/utils/currency";
+import { useVisibility } from "@/components/providers/visibility-provider";
 import type { Goal } from "@/types/database.types";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,8 @@ interface GoalWidgetProps {
 }
 
 export function GoalWidget({ goals }: GoalWidgetProps) {
+  const { mask } = useVisibility();
+
   if (goals.length === 0) {
     return (
       <Card className="border-2 border-black bg-zinc-900 p-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] space-y-4">
@@ -61,7 +64,7 @@ export function GoalWidget({ goals }: GoalWidgetProps) {
                   )}
                 </span>
                 <span className="text-zinc-400">
-                  <span className="text-purple-400">{formatRupiah(current)}</span> / {formatRupiah(target)}
+                  <span className="text-purple-400">{mask(current)}</span> / {mask(target)}
                 </span>
               </div>
 

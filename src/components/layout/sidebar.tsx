@@ -14,6 +14,7 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { VisibilityToggle } from "./visibility-toggle";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -46,7 +47,7 @@ export function Sidebar() {
         const { count } = await supabase
           .from("transactions")
           .select("*", { count: "exact", head: true })
-          .eq("user_id", userId)
+          .eq("user_id", userId as string)
           .eq("status", "pending_review")
           .is("deleted_at", null);
 
@@ -71,12 +72,14 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-56 shrink-0 border-r-2 border-black bg-zinc-900 md:block">
-      <div className="px-4 py-6">
+      <div className="px-4 py-6 flex items-center justify-between gap-2">
         <Link href="/" className="block">
           <span className="text-xl font-black tracking-tight text-teal-400">ApriFlow</span>
           <p className="mt-0.5 text-xs text-zinc-400">Cash flow pribadi</p>
         </Link>
+        <VisibilityToggle />
       </div>
+
       <nav className="space-y-1.5 px-3">
         {navItems.map(({ href, label, icon: Icon, badge }) => {
           const isActive = pathname === href;
