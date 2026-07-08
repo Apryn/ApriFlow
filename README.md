@@ -64,6 +64,16 @@ Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi We
       <img src="public/web-transactions.png" width="100%" alt="Web Transactions"/>
     </td>
   </tr>
+  <tr>
+    <td width="50%" align="center">
+      <b>Manajemen Aset Valid</b><br/>
+      <img src="public/web-assets.png" width="100%" alt="Web Assets"/>
+    </td>
+    <td width="50%" align="center">
+      <b>Pengaturan Akun & Preferensi</b><br/>
+      <img src="public/web-settings.png" width="100%" alt="Web Settings"/>
+    </td>
+  </tr>
 </table>
 
 ---
