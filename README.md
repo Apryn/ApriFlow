@@ -4,7 +4,40 @@ ApriFlow adalah aplikasi pencatatan keuangan (cash flow) pribadi yang pintar, pr
 
 Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi Web (PWA)**.
 
-![ApriFlow Dashboard](public/dashboard-screenshot.png)
+---
+
+## Tampilan Aplikasi (Screenshots)
+
+<table width="100%">
+  <tr>
+    <td width="33%" align="center">
+      <b>Dashboard (Privasi Aktif)</b><br/>
+      <img src="public/screenshot-1.jpg" width="100%" alt="Dashboard Masked"/>
+    </td>
+    <td width="33%" align="center">
+      <b>Halaman Dashboard Utama</b><br/>
+      <img src="public/screenshot-2.jpg" width="100%" alt="Dashboard Main"/>
+    </td>
+    <td width="33%" align="center">
+      <b>Manajemen Aset</b><br/>
+      <img src="public/screenshot-3.jpg" width="100%" alt="Aset"/>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" align="center">
+      <b>Target Tabungan (Goals)</b><br/>
+      <img src="public/screenshot-4.jpg" width="100%" alt="Goals"/>
+    </td>
+    <td width="33%" align="center">
+      <b>Anggaran Bulanan</b><br/>
+      <img src="public/screenshot-5.jpg" width="100%" alt="Budgets"/>
+    </td>
+    <td width="33%" align="center">
+      <b>Riwayat Transaksi</b><br/>
+      <img src="public/screenshot-6.jpg" width="100%" alt="Transactions"/>
+    </td>
+  </tr>
+</table>
 
 ---
 
