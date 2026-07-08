@@ -1,105 +1,84 @@
-# ApriFlow — Asisten Cash Flow Pribadi Pintar & Terkontrol
+# ApriFlow — Asisten Finansial Pribadi Pintar & Terkontrol
 
-Cash flow pribadi lebih jelas, otomatis, aman, dan terkontrol. Dilengkapi fitur pendeteksi AI, manajemen aset valid, dan perlindungan privasi instan.
+ApriFlow adalah aplikasi pencatatan keuangan (cash flow) pribadi yang pintar, praktis, dan aman. Aplikasi ini dirancang agar Anda dapat mengontrol keuangan dengan mudah menggunakan teknologi AI dan fitur perlindungan privasi saldo secara instan.
+
+Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi Web (PWA)**.
 
 ![ApriFlow Dashboard](public/dashboard-screenshot.png)
 
 ---
 
-## Fitur Utama
+## Panduan Penggunaan & Instalasi
 
-### 1. Privacy Visibility Toggle (Sembunyikan Saldo & Aset)
-Lindungi privasi finansial Anda dari pandangan orang lain dengan satu ketukan.
-*   **Sekali Klik:** Sembunyikan total aset, pemasukan, pengeluaran, nominal transaksi, sisa bersih, anggaran bulanan, dan progres tabungan.
-*   **Efek Neo-Brutalist:** Tombol mata interaktif (Eye / EyeOff) yang didesain secara premium dengan micro-interactions responsif.
-*   **Persisten:** Pilihan visibilitas Anda disimpan di localStorage sehingga tidak akan ter-reset saat halaman di-refresh.
+### 1. Versi Aplikasi Web (PWA - Tanpa Instalasi)
+Untuk penggunaan cepat di HP Android atau iPhone tanpa perlu mengunduh file APK:
+1. Buka browser (Safari di iPhone / Chrome di Android) dan kunjungi: [apriflow.vercel.app](https://apriflow.vercel.app).
+2. Ketuk tombol **Share/Menu** pada browser Anda.
+3. Pilih opsi **"Add to Home Screen"** (Tambahkan ke Layar Utama).
+4. Aplikasi akan muncul di layar HP Anda dan dapat dibuka secara layar penuh (full screen) layaknya aplikasi native.
 
-### 2. Asisten AI Pintar (Tanya AI & Catat Cepat)
-Catat transaksi Anda dengan mengetik kalimat alami seperti di aplikasi chat.
-*   *e.g. "gajian 5 juta masuk rekening bank"* atau *"beli kopi 25rb tunai"* – AI akan otomatis mendeteksi kategori, nominal, metode pembayaran, dan tipe transaksi Anda.
+### 2. Versi Aplikasi Mobile Native (Android & iOS)
+Aplikasi ini mendukung kompilasi native menggunakan Capacitor.
 
-### 3. Ringkasan Dashboard & Neo-Brutalist UI
-Tampilan visual menarik bertema dark-mode premium yang responsif di berbagai perangkat.
-*   **Status Cash Flow:** Indikator otomatis (Aman, Waspada, atau Bocor) berdasarkan rasio pengeluaran.
-*   **Limit Anggaran Bulanan:** Batas pengeluaran per kategori yang dilengkapi bar progres interaktif.
-*   **Target Keuangan (Goals):** Lacak progres tabungan impian Anda lengkap dengan persentase pencapaian.
-
-### 4. Multi-Platform Support (Web, PWA, Android, & iOS)
-*   **PWA Standalone Mode:** Jalankan langsung dari Home Screen iPhone/Android secara layar penuh (full screen) tanpa bar navigasi browser Safari/Chrome.
-*   **Capacitor Native Mobile:** Kode dasar yang sama dapat di-build langsung menjadi aplikasi mobile native untuk Android dan iOS.
-
----
-
-## Teknologi yang Digunakan
-
-*   **Frontend & Core:** Next.js 15 + TypeScript + Tailwind CSS v4
-*   **Backend & Database:** Supabase (PostgreSQL + RLS Security Policies + Supabase Auth)
-*   **Mobile Wrapper:** Capacitor CLI v8 (Android & iOS)
-
----
-
-## Setup & Instalasi Lokal
-
-### 1. Kloning & Instal Dependensi
-```bash
-git clone https://github.com/Apryn/ApriFlow.git
-cd ApriFlow
-npm install
-```
-
-### 2. Konfigurasi Supabase
-1. Buat proyek baru di [supabase.com](https://supabase.com).
-2. Jalankan berkas migrasi database di SQL Editor Supabase Anda menggunakan isi dari file:
-   ```bash
-   supabase/migrations/001_phase1_schema.sql
-   ```
-3. Buat file `.env.local` dari template:
-   ```bash
-   cp .env.local.example .env.local
-   ```
-4. Masukkan URL dan Kunci Anonim Supabase Anda:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://proyek-anda.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=kunci-anon-anda
-   ```
-
-### 3. Jalankan Server Pengembangan
-```bash
-npm run dev
-```
-Buka http://localhost:3000 di browser Anda.
-
----
-
-## Panduan Mobile & PWA
-
-### Cara Menjadikan Aplikasi Layar Penuh di iOS (Safari PWA)
-1. Buka link web Anda (misal apriflow.vercel.app) di Safari pada iPhone.
-2. Klik tombol Share (kotak dengan panah ke atas).
-3. Pilih "Add to Home Screen" (Tambahkan ke Layar Utama).
-4. Buka aplikasi melalui ikon baru di Home Screen. Aplikasi akan otomatis berjalan dalam mode standalone (layar penuh tanpa navigasi Safari).
-
-### Sinkronisasi ke Aplikasi Android & iOS (Capacitor)
-Jika ingin melakukan build mobile native:
-1. Jalankan Next.js static build:
+#### Android APK
+Untuk mem-build berkas `.apk` secara lokal:
+1. Jalankan proses build aset web:
    ```bash
    npm run build
    ```
-2. Singkronkan file build statis ke folder native Android/iOS:
+2. Sinkronisasikan aset ke modul Android:
    ```bash
    npx cap sync
    ```
-3. Buka proyek di Android Studio atau Xcode:
+3. Buka proyek di Android Studio untuk melakukan ekspor APK:
    ```bash
-   npx cap open android   # Untuk Android Studio
-   npx cap open ios       # Untuk Xcode (Membutuhkan macOS)
+   npx cap open android
    ```
+
+#### iOS App
+Untuk mem-build proyek iOS (membutuhkan Xcode & macOS):
+1. Jalankan sinkronisasi aset:
+   ```bash
+   npx cap sync
+   ```
+2. Buka proyek di Xcode untuk melakukan kompilasi:
+   ```bash
+   npx cap open ios
+   ```
+*(Catatan: Build otomatis untuk iOS juga berjalan di cloud setiap kali kode di-push ke GitHub melalui GitHub Actions).*
 
 ---
 
-## Roadmap Pengembangan
+## Fitur Utama
 
-*   [x] **Phase 1 (Fondasi):** Auth, PostgreSQL, RLS, Dashboard, CRUD Transaksi & Aset, Privacy Toggle.
-*   [ ] **Phase 2 (Peningkatan AI):** Tanya AI Chat penuh, auto-duplicate detection, analitik laporan AI mingguan.
-*   [ ] **Phase 3 (Ekspansi input):** Fitur OCR scan struk fisik, import bukti transaksi via screenshot, parser mutasi bank otomatis.
-*   [ ] **Phase 4 (Rilis & Integrasi):** Rilis App Store & Play Store, integrasi akun bank resmi.
+### Perlindungan Privasi Saldo (Visibility Toggle)
+Sembunyikan seluruh data nominal sensitif di dashboard (seperti total aset, sisa bersih, pemasukan, pengeluaran, anggaran, dan progres target tabungan) dengan satu ketukan tombol ikon mata di header atas. Pilihan visibilitas disimpan secara lokal sehingga tidak akan hilang saat aplikasi dimuat ulang.
+
+### Pencatatan Transaksi Otomatis dengan AI
+Catat pemasukan atau pengeluaran secara instan dengan cara mengetik kalimat percakapan alami (seperti *"beli kopi 25rb tunai"* atau *"gajian 5 juta masuk rekening bank"*). Sistem AI akan otomatis memproses nominal, metode bayar, dan kategori transaksi secara akurat.
+
+### Neo-Brutalist Dashboard & Analitik Cash Flow
+Visualisasi keuangan bertema dark-mode premium yang responsif dengan deteksi otomatis status pengeluaran (Aman, Waspada, atau Bocor) serta grafik riwayat alur kas bulanan.
+
+---
+
+## Setup Pengembang (Lokal)
+
+### 1. Dependensi & Database
+```bash
+npm install
+```
+Konfigurasikan database PostgreSQL menggunakan berkas skema di `supabase/migrations/001_phase1_schema.sql` pada proyek Supabase Anda.
+
+### 2. Environment Variables
+Buat berkas `.env.local` dan masukkan kunci akses Supabase Anda:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://proyek-anda.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=kunci-anon-anda
+```
+
+### 3. Menjalankan Server Lokal
+```bash
+npm run dev
+```
+Akses server lokal melalui http://localhost:3000.
