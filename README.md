@@ -2,11 +2,13 @@
 
 ApriFlow adalah aplikasi pencatatan keuangan (cash flow) pribadi yang pintar, praktis, dan aman. Aplikasi ini dirancang agar Anda dapat mengontrol keuangan dengan mudah menggunakan teknologi AI dan fitur perlindungan privasi saldo secara instan.
 
-Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi Web (PWA)**.
+Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi Web (PWA / Desktop)**.
 
 ---
 
 ## Tampilan Aplikasi (Screenshots)
+
+### 1. Tampilan Mobile (PWA & APK)
 
 <table width="100%">
   <tr>
@@ -35,6 +37,31 @@ Tersedia dalam versi **Aplikasi Mobile (Android APK & iOS)** serta **Aplikasi We
     <td width="33%" align="center">
       <b>Riwayat Transaksi</b><br/>
       <img src="public/screenshot-6.jpg" width="100%" alt="Transactions"/>
+    </td>
+  </tr>
+</table>
+
+### 2. Tampilan Web (Desktop)
+
+<table width="100%">
+  <tr>
+    <td width="50%" align="center">
+      <b>Dashboard Utama (Desktop)</b><br/>
+      <img src="public/web-dashboard.png" width="100%" alt="Web Dashboard"/>
+    </td>
+    <td width="50%" align="center">
+      <b>Asisten AI Chat</b><br/>
+      <img src="public/web-chat.png" width="100%" alt="Web AI Chat"/>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <b>Form Tambah Cepat</b><br/>
+      <img src="public/web-add.png" width="100%" alt="Web Add Transaction"/>
+    </td>
+    <td width="50%" align="center">
+      <b>Riwayat Transaksi</b><br/>
+      <img src="public/web-transactions.png" width="100%" alt="Web Transactions"/>
     </td>
   </tr>
 </table>
