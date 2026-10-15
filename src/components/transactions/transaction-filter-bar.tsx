@@ -22,6 +22,18 @@ export function TransactionFilterBar() {
     setEndDate(searchParams.get("end_date") ?? "");
   }, [searchParams]);
 
+  const activeType = searchParams.get("type");
+
+  const handleTypeSelect = (typeVal: "income" | "expense" | null) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (typeVal) {
+      params.set("type", typeVal);
+    } else {
+      params.delete("type");
+    }
+    router.push(`/transaksi?${params.toString()}`);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams(searchParams.toString());
@@ -54,10 +66,53 @@ export function TransactionFilterBar() {
     router.push("/transaksi");
   };
 
-  const hasActiveFilters = searchParams.has("query") || searchParams.has("start_date") || searchParams.has("end_date") || searchParams.has("category");
+  const hasActiveFilters =
+    searchParams.has("query") ||
+    searchParams.has("start_date") ||
+    searchParams.has("end_date") ||
+    searchParams.has("category") ||
+    searchParams.has("type");
 
   return (
-    <form onSubmit={handleSearch} className="space-y-3 bg-zinc-900 border-2 border-black p-3.5 rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+    <div className="space-y-3">
+      {/* Quick Type Filter Tabs */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => handleTypeSelect(null)}
+          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all border-2 border-black cursor-pointer ${
+            !activeType
+              ? "bg-zinc-100 text-black shadow-[2px_2px_0px_0px_#2dd4bf]"
+              : "bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          }`}
+        >
+          Semua
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTypeSelect("income")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all border-2 border-black cursor-pointer ${
+            activeType === "income"
+              ? "bg-teal-400 text-black shadow-[2px_2px_0px_0px_#000]"
+              : "bg-zinc-900 text-teal-400 hover:bg-zinc-850 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          }`}
+        >
+          Pemasukan
+        </button>
+        <button
+          type="button"
+          onClick={() => handleTypeSelect("expense")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all border-2 border-black cursor-pointer ${
+            activeType === "expense"
+              ? "bg-rose-500 text-white shadow-[2px_2px_0px_0px_#000]"
+              : "bg-zinc-900 text-rose-400 hover:bg-zinc-850 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          }`}
+        >
+          Pengeluaran
+        </button>
+      </div>
+
+      <form onSubmit={handleSearch} className="space-y-3 bg-zinc-900 border-2 border-black p-3.5 rounded-2xl shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
       <div className="flex flex-col sm:flex-row gap-2.5">
         {/* Text Search */}
         <div className="relative flex-1">
@@ -117,5 +172,6 @@ export function TransactionFilterBar() {
         </Button>
       </div>
     </form>
+    </div>
   );
 }

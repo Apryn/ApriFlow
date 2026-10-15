@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatRupiah } from "@/lib/utils/currency";
 import { useVisibility } from "@/components/providers/visibility-provider";
 import type { DashboardSummary } from "@/types/database.types";
-import { TrendingDown, TrendingUp, Wallet, Scale } from "lucide-react";
+import { TrendingDown, TrendingUp, Wallet, Scale, ChevronRight, History } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import Link from "next/link";
 
@@ -36,58 +36,115 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400">Ringkasan bulan ini</h2>
-        <Badge variant={status.variant}>{status.label}</Badge>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400">Ringkasan Bulan Ini</h2>
+          <Badge variant={status.variant}>{status.label}</Badge>
+        </div>
+        <Link
+          href="/history"
+          className="text-xs font-bold text-teal-400 hover:text-teal-300 hover:underline flex items-center gap-1"
+        >
+          <History className="h-3 w-3" />
+          Riwayat
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Card className="p-3.5 flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#2dd4bf]">
-          <div className="flex items-start justify-between gap-1">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400">Pemasukan</CardTitle>
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-500/10 border border-teal-500/20">
-              <TrendingUp className="h-3.5 w-3.5 text-teal-400" />
+        {/* Pemasukan */}
+        <Link
+          href="/transaksi?type=income"
+          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 rounded-2xl"
+          title="Lihat riwayat pemasukan"
+        >
+          <Card className="p-3.5 h-full flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#2dd4bf] hover:shadow-[4px_4px_0px_0px_#2dd4bf] hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#2dd4bf] transition-all cursor-pointer">
+            <div className="flex items-start justify-between gap-1">
+              <div className="flex items-center gap-1">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400 group-hover:text-teal-400 transition-colors">
+                  Pemasukan
+                </CardTitle>
+                <ChevronRight className="h-3 w-3 text-zinc-500 group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-teal-500/10 border border-teal-500/20 group-hover:bg-teal-500/20 group-hover:scale-105 transition-all">
+                <TrendingUp className="h-3.5 w-3.5 text-teal-400" />
+              </div>
             </div>
-          </div>
-          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-teal-400 break-all">
-            {mask(summary.totalIncome)}
-          </CardValue>
-        </Card>
+            <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-teal-400 break-all">
+              {mask(summary.totalIncome)}
+            </CardValue>
+          </Card>
+        </Link>
 
-        <Card className="p-3.5 flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#f43f5e]">
-          <div className="flex items-start justify-between gap-1">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400">Pengeluaran</CardTitle>
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 border border-rose-500/20">
-              <TrendingDown className="h-3.5 w-3.5 text-rose-400" />
+        {/* Pengeluaran */}
+        <Link
+          href="/transaksi?type=expense"
+          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 rounded-2xl"
+          title="Lihat riwayat pengeluaran"
+        >
+          <Card className="p-3.5 h-full flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#f43f5e] hover:shadow-[4px_4px_0px_0px_#f43f5e] hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#f43f5e] transition-all cursor-pointer">
+            <div className="flex items-start justify-between gap-1">
+              <div className="flex items-center gap-1">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400 group-hover:text-rose-400 transition-colors">
+                  Pengeluaran
+                </CardTitle>
+                <ChevronRight className="h-3 w-3 text-zinc-500 group-hover:text-rose-400 group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 border border-rose-500/20 group-hover:bg-rose-500/20 group-hover:scale-105 transition-all">
+                <TrendingDown className="h-3.5 w-3.5 text-rose-400" />
+              </div>
             </div>
-          </div>
-          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-rose-400 break-all">
-            {mask(summary.totalExpense)}
-          </CardValue>
-        </Card>
+            <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-rose-400 break-all">
+              {mask(summary.totalExpense)}
+            </CardValue>
+          </Card>
+        </Link>
 
-        <Card className="p-3.5 flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#3b82f6]">
-          <div className="flex items-start justify-between gap-1">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400">Sisa bersih</CardTitle>
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20">
-              <Scale className="h-3.5 w-3.5 text-blue-400" />
+        {/* Sisa Bersih */}
+        <Link
+          href="/transaksi"
+          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 rounded-2xl"
+          title="Lihat seluruh transaksi"
+        >
+          <Card className="p-3.5 h-full flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#3b82f6] hover:shadow-[4px_4px_0px_0px_#3b82f6] hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#3b82f6] transition-all cursor-pointer">
+            <div className="flex items-start justify-between gap-1">
+              <div className="flex items-center gap-1">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400 group-hover:text-blue-400 transition-colors">
+                  Sisa bersih
+                </CardTitle>
+                <ChevronRight className="h-3 w-3 text-zinc-500 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 group-hover:bg-blue-500/20 group-hover:scale-105 transition-all">
+                <Scale className="h-3.5 w-3.5 text-blue-400" />
+              </div>
             </div>
-          </div>
-          <CardValue className={cn("mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight break-all", summary.netBalance >= 0 ? "text-teal-400" : "text-rose-400")}>
-            {mask(summary.netBalance)}
-          </CardValue>
-        </Card>
+            <CardValue className={cn("mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight break-all", summary.netBalance >= 0 ? "text-teal-400" : "text-rose-400")}>
+              {mask(summary.netBalance)}
+            </CardValue>
+          </Card>
+        </Link>
 
-        <Card className="p-3.5 flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#a855f7]">
-          <div className="flex items-start justify-between gap-1">
-            <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400">Aset valid</CardTitle>
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-500/10 border border-purple-500/20">
-              <Wallet className="h-3.5 w-3.5 text-purple-400" />
+        {/* Aset Valid */}
+        <Link
+          href="/aset"
+          className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-2xl"
+          title="Kelola aset valid"
+        >
+          <Card className="p-3.5 h-full flex flex-col justify-between border-2 border-black shadow-[3px_3px_0px_0px_#a855f7] hover:shadow-[4px_4px_0px_0px_#a855f7] hover:-translate-x-[1px] hover:-translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#a855f7] transition-all cursor-pointer">
+            <div className="flex items-start justify-between gap-1">
+              <div className="flex items-center gap-1">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-zinc-400 group-hover:text-purple-400 transition-colors">
+                  Aset valid
+                </CardTitle>
+                <ChevronRight className="h-3 w-3 text-zinc-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" />
+              </div>
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-purple-500/10 border border-purple-500/20 group-hover:bg-purple-500/20 group-hover:scale-105 transition-all">
+                <Wallet className="h-3.5 w-3.5 text-purple-400" />
+              </div>
             </div>
-          </div>
-          <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-zinc-100 break-all">
-            {mask(summary.totalAssets)}
-          </CardValue>
-        </Card>
+            <CardValue className="mt-2 text-xs min-[360px]:text-sm sm:text-base md:text-lg font-black tracking-tight text-zinc-100 break-all">
+              {mask(summary.totalAssets)}
+            </CardValue>
+          </Card>
+        </Link>
       </div>
 
       {summary.topExpenseCategories.length > 0 && (

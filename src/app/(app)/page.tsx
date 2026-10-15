@@ -17,18 +17,31 @@ import { CashFlowChart } from "@/components/dashboard/cash-flow-chart";
 import { BudgetWidget } from "@/components/dashboard/budget-widget";
 import { GoalWidget } from "@/components/dashboard/goal-widget";
 import { OnboardingModal } from "@/components/dashboard/onboarding-modal";
+import { MandatoryExpensesSection } from "@/components/dashboard/mandatory-expenses-section";
+import { getMandatoryExpenses } from "@/lib/db/mandatory-expenses";
+import { MonthNavigator } from "@/components/layout/month-navigator";
 import type { Goal } from "@/types/database.types";
 import type { Budget } from "@/services/ai-engine/types";
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{
+    year?: string;
+    month?: string;
+  }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const user = await getUser();
   if (!user) redirect("/login");
 
-  const { year, month } = getCurrentMonthRange();
+  const resolvedParams = await searchParams;
+  const current = getCurrentMonthRange();
+  const year = resolvedParams.year ? parseInt(resolvedParams.year, 10) : current.year;
+  const month = resolvedParams.month ? parseInt(resolvedParams.month, 10) : current.month;
   
-  // Fetch dashboard summaries and parallel transactions/budgets/goals
+  // Fetch dashboard summaries and parallel transactions/budgets/goals/mandatoryExpenses
   const supabase = await createClient();
-  const [summary, transactions, budgetsRes, goalsRes] = await Promise.all([
+  const [summary, transactions, budgetsRes, goalsRes, mandatoryExpenses] = await Promise.all([
     getDashboardSummary(user.id, year, month),
     getTransactions(user.id, year, month),
     supabase
@@ -42,6 +55,7 @@ export default async function DashboardPage() {
       .order("is_completed", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(3),
+    getMandatoryExpenses(user.id),
   ]);
 
   const budgets = (budgetsRes.data ?? []) as unknown as Budget[];
@@ -62,11 +76,21 @@ export default async function DashboardPage() {
         }
       />
 
+      <div className="my-3">
+        <MonthNavigator currentYear={year} currentMonth={month} />
+      </div>
+
       <QuickTransactionInput />
 
       <OnboardingModal />
 
       <SummaryCards summary={summary} />
+
+      <MandatoryExpensesSection
+        initialItems={mandatoryExpenses}
+        year={year}
+        month={month}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 mt-4">
         <CashFlowChart transactions={transactions} />

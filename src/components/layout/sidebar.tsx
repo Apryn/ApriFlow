@@ -12,6 +12,7 @@ import {
   Settings,
   Sparkles,
   ClipboardList,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { VisibilityToggle } from "./visibility-toggle";
@@ -66,6 +67,7 @@ export function Sidebar() {
     { href: "/review", label: "Review Draf", icon: ClipboardList, badge: pendingCount > 0 ? pendingCount : undefined },
     { href: "/tambah", label: "Tambah Cepat", icon: PlusCircle },
     { href: "/transaksi", label: "Transaksi", icon: ArrowLeftRight },
+    { href: "/history", label: "Riwayat Bulanan", icon: History },
     { href: "/aset", label: "Aset", icon: Wallet },
     { href: "/settings", label: "Settings", icon: Settings },
   ];

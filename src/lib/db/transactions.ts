@@ -64,7 +64,8 @@ export async function getTransactions(
   categoryName?: string,
   searchQuery?: string,
   startDate?: string,
-  endDate?: string
+  endDate?: string,
+  type?: "income" | "expense" | string
 ): Promise<TransactionWithCategory[]> {
   const supabase = await createClient();
   const start = `${year}-${String(month).padStart(2, "0")}-01`;
@@ -81,6 +82,10 @@ export async function getTransactions(
     .eq("user_id", userId)
     .eq("status", "confirmed")
     .is("deleted_at", null);
+
+  if (type === "income" || type === "expense") {
+    query = query.eq("type", type);
+  }
 
   if (startDate) {
     query = query.gte("date", startDate);

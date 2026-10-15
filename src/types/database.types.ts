@@ -94,6 +94,17 @@ export type Asset = {
 
 export type Goal = Database["public"]["Tables"]["goals"]["Row"];
 
+export type MandatoryExpense = {
+  id: string;
+  name: string;
+  amount: number;
+  due_day?: number | null;
+  category_name?: string | null;
+  paid_months: string[];
+  created_at: string;
+  updated_at: string;
+};
+
 export type DashboardSummary = {
   totalAssets: number;
   totalIncome: number;
@@ -102,6 +113,29 @@ export type DashboardSummary = {
   topExpenseCategories: { name: string; total: number; count: number; expense_kind: ExpenseKind | null }[];
   transactionCount: number;
 }
+
+export type MonthlyHistoryItem = {
+  year: number;
+  month: number;
+  monthLabel: string;
+  totalIncome: number;
+  totalExpense: number;
+  netBalance: number;
+  transactionCount: number;
+  topExpenseCategory?: {
+    name: string;
+    total: number;
+  } | null;
+  expenseDiffFromPrev?: number | null;
+  expensePercentChange?: number | null;
+};
+
+export type MonthlyHistoryData = {
+  months: MonthlyHistoryItem[];
+  currentMonth: MonthlyHistoryItem;
+  lastMonth: MonthlyHistoryItem;
+  overallAverageExpense: number;
+};
 
 export type Database = {
   public: {

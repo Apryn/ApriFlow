@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wallet } from "lucide-react";
+import { Wallet, History } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,15 +22,29 @@ export default async function SettingsPage() {
         </Card>
 
         <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#2dd4bf] hover:shadow-[4px_4px_0px_0px_#2dd4bf] hover:-translate-x-[0.5px] hover:-translate-y-[0.5px] transition-all p-4">
+          <Link href="/history" className="block w-full">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm font-black text-teal-400 uppercase tracking-wider">Riwayat & Laporan Bulanan</p>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Cek pengeluaran bulan kemarin, tren arus kas, dan arsip bulanan.
+                </p>
+              </div>
+              <History className="h-5 w-5 text-teal-400 shrink-0 ml-2" />
+            </div>
+          </Link>
+        </Card>
+
+        <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#a855f7] hover:shadow-[4px_4px_0px_0px_#a855f7] hover:-translate-x-[0.5px] hover:-translate-y-[0.5px] transition-all p-4">
           <Link href="/aset" className="block w-full">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-black text-teal-400 uppercase tracking-wider">Aset Valid</p>
+                <p className="text-sm font-black text-purple-400 uppercase tracking-wider">Aset Valid</p>
                 <p className="text-xs text-zinc-400 leading-relaxed">
                   Kelola rekening bank, uang tunai, investasi, dan emas Anda.
                 </p>
               </div>
-              <Wallet className="h-5 w-5 text-teal-400 shrink-0 ml-2" />
+              <Wallet className="h-5 w-5 text-purple-400 shrink-0 ml-2" />
             </div>
           </Link>
         </Card>
