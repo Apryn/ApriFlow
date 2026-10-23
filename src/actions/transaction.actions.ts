@@ -6,6 +6,7 @@ import { transactionSchema } from "@/lib/validators/transaction.schema";
 import { parseTransactionWithOpenAI } from "@/lib/ai/openai";
 import { getCategories } from "@/lib/db/transactions";
 import { CacheRepository } from "@/services/ai-engine/repositories/cache.repository";
+import { getMandatoryExpenses, saveMandatoryExpenses } from "@/lib/db/mandatory-expenses";
 
 export type ActionState = {
   error?: string;
@@ -96,6 +97,15 @@ export async function deleteTransaction(id: string): Promise<ActionState> {
   if (!user) return { error: "Sesi tidak valid. Silakan login ulang." };
 
   const supabase = await createClient();
+
+  // Check if transaction was generated from a mandatory expense
+  const { data: tx } = await supabase
+    .from("transactions")
+    .select("ai_raw_payload")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+
   const { error } = await supabase
     .from("transactions")
     .update({ deleted_at: new Date().toISOString() })
@@ -103,6 +113,23 @@ export async function deleteTransaction(id: string): Promise<ActionState> {
     .eq("user_id", user.id);
 
   if (error) return { error: error.message };
+
+  const payload = tx?.ai_raw_payload as any;
+  if (payload?.source_type === "mandatory_expense" && payload?.mandatory_expense_id) {
+    try {
+      const items = await getMandatoryExpenses(user.id);
+      const item = items.find((it) => it.id === payload.mandatory_expense_id);
+      if (item && payload.month_key) {
+        item.paid_months = (item.paid_months || []).filter((m) => m !== payload.month_key);
+        if (item.paid_transaction_ids) {
+          delete item.paid_transaction_ids[payload.month_key];
+        }
+        await saveMandatoryExpenses(user.id, items);
+      }
+    } catch (e) {
+      console.error("Failed to uncheck mandatory expense upon deleting transaction:", e);
+    }
+  }
 
   await new CacheRepository().invalidate(user.id);
 

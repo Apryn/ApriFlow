@@ -101,6 +101,7 @@ export type MandatoryExpense = {
   due_day?: number | null;
   category_name?: string | null;
   paid_months: string[];
+  paid_transaction_ids?: Record<string, string>;
   created_at: string;
   updated_at: string;
 };

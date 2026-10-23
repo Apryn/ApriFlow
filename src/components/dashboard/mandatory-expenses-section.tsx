@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,9 +49,15 @@ export function MandatoryExpensesSection({
   year,
   month,
 }: MandatoryExpensesSectionProps) {
+  const router = useRouter();
   const { mask } = useVisibility();
   const [items, setItems] = useState<MandatoryExpense[]>(initialItems);
   const [isPending, startTransition] = useTransition();
+
+  // Sync state if initialItems changes externally
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,7 +70,6 @@ export function MandatoryExpensesSection({
   const monthKey = `${year}-${String(month).padStart(2, "0")}`;
   const monthLabel = formatMonthYear(year, month);
 
-  // Sync state if initialItems changes externally
   // Calculate summary metrics
   const totalAmount = items.reduce((sum, it) => sum + it.amount, 0);
   const paidItems = items.filter((it) => it.paid_months?.includes(monthKey));
@@ -120,6 +126,8 @@ export function MandatoryExpensesSection({
         setItems((prev) =>
           prev.map((it) => (it.id === item.id ? { ...it, paid_months: item.paid_months } : it))
         );
+      } else {
+        router.refresh();
       }
     });
   };
@@ -131,6 +139,7 @@ export function MandatoryExpensesSection({
     setItems((prev) => prev.filter((it) => it.id !== id));
     startTransition(async () => {
       await deleteMandatoryExpenseAction(id);
+      router.refresh();
     });
   };
 
@@ -181,6 +190,7 @@ export function MandatoryExpensesSection({
             )
           );
           setIsModalOpen(false);
+          router.refresh();
         }
       } else {
         // Add
@@ -194,11 +204,13 @@ export function MandatoryExpensesSection({
             amount,
             due_day: dueDayNum,
             paid_months: [],
+            paid_transaction_ids: {},
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
           setItems((prev) => [...prev, newItem]);
           setIsModalOpen(false);
+          router.refresh();
         }
       }
     });
@@ -222,7 +234,7 @@ export function MandatoryExpensesSection({
               </Badge>
             </div>
             <p className="text-[11px] text-zinc-400">
-              Checklist tagihan bulanan (otomatis reset tiap bulan baru)
+              Checklist tagihan bulanan · <span className="text-amber-400 font-bold">Otomatis masuk ke pengeluaran bulan ini saat dicentang</span>
             </p>
           </div>
         </div>
@@ -344,7 +356,7 @@ export function MandatoryExpensesSection({
                       )}
                       {isPaid ? (
                         <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-400 border border-teal-500/30">
-                          Lunas
+                          Lunas · Masuk Pengeluaran
                         </span>
                       ) : (
                         <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">

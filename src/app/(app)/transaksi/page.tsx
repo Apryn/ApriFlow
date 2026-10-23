@@ -3,6 +3,7 @@ import { TransactionList } from "@/components/transactions/transaction-list";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { getTransactions } from "@/lib/db/transactions";
+import { syncMandatoryExpensesForMonth } from "@/lib/db/mandatory-expenses";
 import { getUser } from "@/lib/supabase/server";
 import { getCurrentMonthRange, formatMonthYear } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,8 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
   const year = resolved.year ? parseInt(resolved.year, 10) : current.year;
   const month = resolved.month ? parseInt(resolved.month, 10) : current.month;
   const { category, query, start_date, end_date, type } = resolved;
+
+  await syncMandatoryExpensesForMonth(user.id, year, month);
 
   const transactions = await getTransactions(
     user.id,

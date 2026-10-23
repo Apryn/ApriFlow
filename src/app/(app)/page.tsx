@@ -18,7 +18,7 @@ import { BudgetWidget } from "@/components/dashboard/budget-widget";
 import { GoalWidget } from "@/components/dashboard/goal-widget";
 import { OnboardingModal } from "@/components/dashboard/onboarding-modal";
 import { MandatoryExpensesSection } from "@/components/dashboard/mandatory-expenses-section";
-import { getMandatoryExpenses } from "@/lib/db/mandatory-expenses";
+import { getMandatoryExpenses, syncMandatoryExpensesForMonth } from "@/lib/db/mandatory-expenses";
 import { MonthNavigator } from "@/components/layout/month-navigator";
 import type { Goal } from "@/types/database.types";
 import type { Budget } from "@/services/ai-engine/types";
@@ -39,6 +39,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const year = resolvedParams.year ? parseInt(resolvedParams.year, 10) : current.year;
   const month = resolvedParams.month ? parseInt(resolvedParams.month, 10) : current.month;
   
+  // Sync any checked mandatory expenses for this month to ensure they appear in transactions & monthly expenses
+  await syncMandatoryExpensesForMonth(user.id, year, month);
+
   // Fetch dashboard summaries and parallel transactions/budgets/goals/mandatoryExpenses
   const supabase = await createClient();
   const [summary, transactions, budgetsRes, goalsRes, mandatoryExpenses] = await Promise.all([
