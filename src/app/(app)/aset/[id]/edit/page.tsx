@@ -19,11 +19,16 @@ export default async function EditAssetPage({ params }: EditAssetPageProps) {
   if (!asset) notFound();
 
   return (
-    <>
-      <PageHeader title="Edit Aset" subtitle="Perbarui detail aset." />
+    <div className="space-y-4">
+      <PageHeader
+        title="Edit Aset"
+        subtitle="Perbarui saldo atau informasi aset."
+        backHref="/aset"
+        backLabel="Daftar Aset"
+      />
       <Card>
         <AssetForm asset={asset} />
       </Card>
-    </>
+    </div>
   );
 }

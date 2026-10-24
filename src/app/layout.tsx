@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body className={`${inter.variable} bg-gray-50 text-gray-900 antialiased`}>
+      <body className={`${inter.variable} bg-canvas text-zinc-50 antialiased`}>
         {children}
       </body>
     </html>

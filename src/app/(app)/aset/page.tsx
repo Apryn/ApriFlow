@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { getAssets, getTotalAssets } from "@/lib/db/assets";
 import { getUser } from "@/lib/supabase/server";
-import { PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function AsetPage() {
@@ -17,20 +17,20 @@ export default async function AsetPage() {
   ]);
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
         title="Aset Valid"
-        subtitle="Hanya aset yang benar-benar kamu miliki."
+        subtitle="Saldo rekening bank, uang tunai, investasi, dan simpanan Anda."
         action={
           <Link href="/aset/tambah">
             <Button size="sm">
-              <PlusCircle className="h-4 w-4" />
-              Tambah
+              <Plus className="h-4 w-4" />
+              Tambah Aset
             </Button>
           </Link>
         }
       />
       <AssetList assets={assets} totalAssets={totalAssets} />
-    </>
+    </div>
   );
 }

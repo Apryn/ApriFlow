@@ -21,18 +21,16 @@ export default async function BudgetsPage() {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
         title="Limit Anggaran"
-        subtitle="Kelola batas pengeluaran bulanan per kategori."
+        subtitle="Kelola batas maksimal pengeluaran bulanan per kategori."
       />
 
-      <div className="mt-4">
-        <BudgetManagerForm
-          categories={categories}
-          initialBudgets={budgets ?? []}
-        />
-      </div>
-    </>
+      <BudgetManagerForm
+        categories={categories}
+        initialBudgets={budgets ?? []}
+      />
+    </div>
   );
 }

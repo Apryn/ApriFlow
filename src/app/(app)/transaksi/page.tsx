@@ -7,7 +7,7 @@ import { syncMandatoryExpensesForMonth } from "@/lib/db/mandatory-expenses";
 import { getUser } from "@/lib/supabase/server";
 import { getCurrentMonthRange, formatMonthYear } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { redirect } from "next/navigation";
 import { TransactionFilterBar } from "@/components/transactions/transaction-filter-bar";
 import { MonthNavigator } from "@/components/layout/month-navigator";
@@ -48,17 +48,17 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
   );
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
-        title="Transaksi"
+        title="Daftar Transaksi"
         subtitle={
-          <div className="flex items-center gap-2 flex-wrap text-zinc-400 font-bold text-xs mt-1">
+          <div className="flex items-center gap-2 flex-wrap text-zinc-400 font-medium text-xs mt-0.5">
             <span>{formatMonthYear(year, month)}</span>
             {type && (
               <Link href={category ? `/transaksi?category=${encodeURIComponent(category)}&year=${year}&month=${month}` : `/transaksi?year=${year}&month=${month}`}>
                 <Badge
                   variant={type === "income" ? "success" : "danger"}
-                  className="flex items-center gap-1.5 bg-zinc-850 hover:bg-zinc-800 border border-black shadow-[1.5px_1.5px_0px_0px_#000] cursor-pointer text-[10px] font-black uppercase tracking-wider py-0.5 px-2"
+                  className="cursor-pointer"
                 >
                   Tipe: {type === "income" ? "Pemasukan" : "Pengeluaran"}
                   <X className="h-3 w-3" />
@@ -67,7 +67,7 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
             )}
             {category && (
               <Link href={type ? `/transaksi?type=${type}&year=${year}&month=${month}` : `/transaksi?year=${year}&month=${month}`}>
-                <Badge variant="info" className="flex items-center gap-1.5 bg-zinc-850 hover:bg-zinc-800 text-teal-400 border border-black shadow-[1.5px_1.5px_0px_0px_#000] cursor-pointer text-[10px] font-black uppercase tracking-wider py-0.5 px-2">
+                <Badge variant="info" className="cursor-pointer">
                   Kategori: {category}
                   <X className="h-3 w-3" />
                 </Badge>
@@ -78,22 +78,18 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
         action={
           <Link href="/tambah">
             <Button size="sm">
-              <PlusCircle className="h-4 w-4" />
-              Tambah
+              <Plus className="h-4 w-4" />
+              Catat
             </Button>
           </Link>
         }
       />
 
-      <div className="my-3">
-        <MonthNavigator currentYear={year} currentMonth={month} />
-      </div>
+      <MonthNavigator currentYear={year} currentMonth={month} />
 
-      <div className="my-4">
-        <TransactionFilterBar />
-      </div>
+      <TransactionFilterBar />
 
       <TransactionList transactions={transactions} />
-    </>
+    </div>
   );
 }

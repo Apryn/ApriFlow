@@ -1,19 +1,79 @@
 import { cn } from "@/lib/utils/cn";
-import type { HTMLAttributes } from "react";
+import Link from "next/link";
+import type { HTMLAttributes, ReactNode } from "react";
 
+/** Base surface. All cards share one border + one black shadow. */
 export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-2xl bg-zinc-900 p-4 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]", className)}
+      className={cn("rounded-2xl border-2 border-black bg-surface p-4 shadow-nb", className)}
       {...props}
     />
   );
 }
 
 export function CardTitle({ className, ...props }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cn("text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-400", className)} {...props} />;
+  return (
+    <h3
+      className={cn("text-[11px] font-semibold uppercase tracking-wider text-zinc-400", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardValue({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("mt-1.5 text-lg sm:text-xl md:text-2xl font-black text-zinc-50 tracking-tight", className)} {...props} />;
+  return (
+    <p
+      className={cn("tabular mt-1 text-xl font-bold tracking-tight text-zinc-50 md:text-2xl", className)}
+      {...props}
+    />
+  );
+}
+
+/** Consistent card header: title on the left, optional link/action on the right. */
+export function CardHeader({
+  title,
+  href,
+  linkLabel = "Lihat semua",
+  action,
+  className,
+}: {
+  title: ReactNode;
+  href?: string;
+  linkLabel?: string;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mb-3 flex items-center justify-between gap-2", className)}>
+      <CardTitle>{title}</CardTitle>
+      {action ??
+        (href && (
+          <Link
+            href={href}
+            className="text-xs font-semibold text-teal-400 transition-colors hover:text-teal-300"
+          >
+            {linkLabel}
+          </Link>
+        ))}
+    </div>
+  );
+}
+
+/** Section title used outside of cards (e.g. above a list). */
+export function SectionTitle({
+  children,
+  action,
+  className,
+}: {
+  children: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mb-2 flex items-center justify-between gap-2 px-1", className)}>
+      <h2 className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">{children}</h2>
+      {action}
+    </div>
+  );
 }

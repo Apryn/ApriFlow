@@ -2,86 +2,48 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { Home, Sparkles, ClipboardList, ArrowLeftRight, Menu } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { usePendingCount } from "@/components/providers/pending-count-provider";
+import { MOBILE_NAV, PLANNING_NAV, SETTINGS_NAV, isNavActive } from "@/lib/navigation";
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [pendingCount, setPendingCount] = useState(0);
-  const [userId, setUserId] = useState<string | null>(null);
-  const supabase = createClient();
+  const pendingCount = usePendingCount();
 
-  useEffect(() => {
-    async function getUserId() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUserId(session.user.id);
-        } else {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) setUserId(user.id);
-        }
-      } catch (err) {
-        console.error("Error getting user session:", err);
-      }
-    }
-    getUserId();
-  }, [supabase]);
-
-  useEffect(() => {
-    if (!userId) return;
-
-    async function fetchPendingCount() {
-      try {
-        const { count } = await supabase
-          .from("transactions")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId as string)
-          .eq("status", "pending_review")
-          .is("deleted_at", null);
-
-        setPendingCount(count ?? 0);
-      } catch (err) {
-        console.error("Error fetching pending count:", err);
-      }
-    }
-
-    fetchPendingCount();
-  }, [supabase, pathname, userId]);
-
-  const navItems = [
-    { href: "/", label: "Dashboard", icon: Home },
-    { href: "/ai-chat", label: "Tanya AI", icon: Sparkles },
-    { href: "/review", label: "Review", icon: ClipboardList, badge: pendingCount > 0 ? pendingCount : undefined },
-    { href: "/transaksi", label: "Transaksi", icon: ArrowLeftRight },
-    { href: "/settings", label: "Menu", icon: Menu },
-  ];
+  // "Menu" is active for the settings page and every planning page reachable from it.
+  const menuHrefs = [SETTINGS_NAV.href, ...PLANNING_NAV.map((n) => n.href)];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-black bg-zinc-900/95 pb-[calc(env(safe-area-inset-bottom,0px)+6px)] pt-1.5 backdrop-blur-md md:hidden">
-      <div className="mx-auto flex max-w-lg items-center justify-around px-2">
-        {navItems.map(({ href, label, icon: Icon, badge }) => {
-          const isActive = pathname === href;
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t-2 border-black bg-zinc-900/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-md md:hidden">
+      <div className="mx-auto grid max-w-lg grid-cols-5">
+        {MOBILE_NAV.map(({ href, label, icon: Icon, showPendingBadge }) => {
+          const active =
+            href === SETTINGS_NAV.href
+              ? menuHrefs.some((h) => isNavActive(pathname, h))
+              : isNavActive(pathname, href);
+          const badge = showPendingBadge && pendingCount > 0 ? pendingCount : null;
+
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 py-2 text-xs transition-colors relative",
-                isActive ? "text-teal-400 font-extrabold" : "text-zinc-400 hover:text-zinc-200"
+                "relative flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors",
+                active ? "text-teal-400" : "text-zinc-500 active:text-zinc-200"
               )}
             >
-              <div className="relative">
-                <Icon className={cn("h-5 w-5", isActive && "stroke-[3]")} />
-                {badge !== undefined && (
-                  <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-teal-400 px-1 text-[9px] font-extrabold text-black border border-black shadow-[1px_1px_0px_0px_#000]">
+              {active && (
+                <span className="absolute inset-x-5 top-0 h-[3px] rounded-b-full bg-teal-400" />
+              )}
+              <span className="relative">
+                <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
+                {badge !== null && (
+                  <span className="tabular absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full border border-black bg-teal-400 px-1 text-[9px] font-bold text-black">
                     {badge}
                   </span>
                 )}
-              </div>
-              <span className="font-bold">{label}</span>
+              </span>
+              <span className={cn(active && "font-semibold")}>{label}</span>
             </Link>
           );
         })}

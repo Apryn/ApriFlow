@@ -12,14 +12,16 @@ export default async function TambahPage() {
   const categories = await getCategories(user.id);
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
-        title="Tambah Cepat"
-        subtitle="Catat transaksi manual — langsung tersimpan."
+        title="Catat Transaksi"
+        subtitle="Catat pengeluaran atau pemasukan secara manual."
+        backHref="/transaksi"
+        backLabel="Daftar Transaksi"
       />
       <Card>
         <TransactionForm categories={categories} redirectTo="/transaksi" />
       </Card>
-    </>
+    </div>
   );
 }

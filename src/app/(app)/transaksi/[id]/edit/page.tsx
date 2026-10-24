@@ -22,8 +22,13 @@ export default async function EditTransactionPage({ params }: EditTransactionPag
   if (!transaction) notFound();
 
   return (
-    <>
-      <PageHeader title="Edit Transaksi" subtitle="Perbarui detail transaksi." />
+    <div className="space-y-4">
+      <PageHeader
+        title="Edit Transaksi"
+        subtitle="Perbarui detail transaksi."
+        backHref="/transaksi"
+        backLabel="Daftar Transaksi"
+      />
       <Card>
         <TransactionForm
           categories={categories}
@@ -31,6 +36,6 @@ export default async function EditTransactionPage({ params }: EditTransactionPag
           redirectTo="/transaksi"
         />
       </Card>
-    </>
+    </div>
   );
 }

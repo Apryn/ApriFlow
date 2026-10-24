@@ -1,67 +1,65 @@
 import Link from "next/link";
-import { Wallet, History } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { signOut } from "@/actions/auth.actions";
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { PLANNING_NAV } from "@/lib/navigation";
 
 export default async function SettingsPage() {
   const user = await getUser();
   if (!user) redirect("/login");
 
   return (
-    <>
-      <PageHeader title="Settings" subtitle="Kelola akun dan preferensi." />
+    <div className="space-y-5">
+      <PageHeader title="Menu & Pengaturan" subtitle="Kelola akun, perencanaan, dan preferensi aplikasi." />
 
-      <div className="space-y-5">
-        <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#a855f7] p-4">
-          <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">Akun</p>
-          <p className="mt-1.5 text-sm font-bold text-zinc-100">{user.email}</p>
-        </Card>
+      <Card className="p-4 space-y-1">
+        <p className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Akun Terdaftar</p>
+        <p className="text-sm font-semibold text-zinc-100">{user.email}</p>
+      </Card>
 
-        <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#2dd4bf] hover:shadow-[4px_4px_0px_0px_#2dd4bf] hover:-translate-x-[0.5px] hover:-translate-y-[0.5px] transition-all p-4">
-          <Link href="/history" className="block w-full">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm font-black text-teal-400 uppercase tracking-wider">Riwayat & Laporan Bulanan</p>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Cek pengeluaran bulan kemarin, tren arus kas, dan arsip bulanan.
-                </p>
-              </div>
-              <History className="h-5 w-5 text-teal-400 shrink-0 ml-2" />
-            </div>
-          </Link>
-        </Card>
-
-        <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#a855f7] hover:shadow-[4px_4px_0px_0px_#a855f7] hover:-translate-x-[0.5px] hover:-translate-y-[0.5px] transition-all p-4">
-          <Link href="/aset" className="block w-full">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-sm font-black text-purple-400 uppercase tracking-wider">Aset Valid</p>
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Kelola rekening bank, uang tunai, investasi, dan emas Anda.
-                </p>
-              </div>
-              <Wallet className="h-5 w-5 text-purple-400 shrink-0 ml-2" />
-            </div>
-          </Link>
-        </Card>
-
-        <Card className="border-2 border-black bg-zinc-900 shadow-[3px_3px_0px_0px_#f43f5e] p-4">
-          <p className="text-sm font-black text-rose-400 uppercase tracking-wider">ApriFlow v0.2 — Phase 2</p>
-          <p className="mt-1.5 text-xs text-zinc-400 leading-relaxed">
-            Pencatatan transaksi berbasis AI chat dengan review antrean persetujuan.
-          </p>
-        </Card>
-
-        <form action={signOut}>
-          <Button type="submit" variant="danger" className="w-full h-11 text-sm font-extrabold rounded-xl">
-            Keluar
-          </Button>
-        </form>
+      <div className="space-y-2">
+        <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider px-1">Perencanaan Finansial</h2>
+        <div className="grid gap-2">
+          {PLANNING_NAV.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link key={item.href} href={item.href}>
+                <Card className="p-3.5 flex items-center justify-between hover:bg-zinc-800/50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-2 border border-zinc-800 text-teal-400">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm text-zinc-100">{item.label}</p>
+                      {item.description && (
+                        <p className="text-xs text-zinc-500">{item.description}</p>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-zinc-600" />
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-    </>
+
+      <Card className="p-4 space-y-1">
+        <p className="text-xs font-semibold text-zinc-400">ApriFlow v0.3</p>
+        <p className="text-xs text-zinc-500 leading-relaxed">
+          Pencatatan arus kas pribadi bertenaga AI dengan integrasi WhatsApp & bot Gemini.
+        </p>
+      </Card>
+
+      <form action={signOut}>
+        <Button type="submit" variant="danger" className="w-full">
+          Keluar dari Akun
+        </Button>
+      </form>
+    </div>
   );
 }

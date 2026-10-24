@@ -4,11 +4,16 @@ import { Card } from "@/components/ui/card";
 
 export default function TambahAsetPage() {
   return (
-    <>
-      <PageHeader title="Tambah Aset" subtitle="Catat aset valid yang kamu miliki." />
+    <div className="space-y-4">
+      <PageHeader
+        title="Tambah Aset"
+        subtitle="Catat rekening bank, uang tunai, atau simpanan Anda."
+        backHref="/aset"
+        backLabel="Daftar Aset"
+      />
       <Card>
         <AssetForm />
       </Card>
-    </>
+    </div>
   );
 }

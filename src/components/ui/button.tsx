@@ -1,39 +1,51 @@
 import { cn } from "@/lib/utils/cn";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
 }
 
+const base =
+  "inline-flex items-center justify-center gap-1.5 font-semibold whitespace-nowrap select-none cursor-pointer " +
+  "transition-[transform,box-shadow,background-color,color] duration-150 " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 " +
+  "disabled:opacity-50 disabled:pointer-events-none";
+
+const solid =
+  "border-2 border-black shadow-nb-sm active:translate-x-px active:translate-y-px active:shadow-none";
+
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-teal-400 text-black border-2 border-black hover:bg-teal-300 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
-  secondary: "bg-zinc-800 text-zinc-100 border-2 border-black hover:bg-zinc-700 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
-  ghost: "bg-transparent text-zinc-400 border-2 border-transparent hover:bg-zinc-900 hover:text-zinc-100",
-  danger: "bg-red-500 text-black border-2 border-black hover:bg-red-400 shadow-[2px_2px_0px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_#000]",
+  primary: `${solid} bg-teal-400 text-black hover:bg-teal-300`,
+  secondary: `${solid} bg-zinc-800 text-zinc-100 hover:bg-zinc-700`,
+  danger: `${solid} bg-rose-500 text-black hover:bg-rose-400`,
+  ghost: "border-2 border-transparent bg-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "px-3 py-1.5 text-xs rounded-xl",
-  md: "px-4 py-2.5 text-sm rounded-xl",
-  lg: "px-5 py-3 text-base rounded-2xl",
+  sm: "h-8 px-3 text-xs rounded-lg",
+  md: "h-10 px-4 text-sm rounded-xl",
+  lg: "h-12 px-5 text-sm rounded-xl",
+  icon: "h-8 w-8 p-0 rounded-lg",
 };
 
+/** Class helper so links (`<Link>`) can look exactly like buttons without nesting `<button>` in `<a>`. */
+export function buttonVariants({
+  variant = "primary",
+  size = "md",
+  className,
+}: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) {
+  return cn(base, variants[variant], sizes[size], className);
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", disabled, ...props }, ref) => (
+  ({ className, variant = "primary", size = "md", ...props }, ref) => (
     <button
       ref={ref}
-      disabled={disabled}
-      className={cn(
-        "inline-flex items-center justify-center gap-2 font-bold transition-all",
-        "disabled:opacity-50 disabled:pointer-events-none focus:outline-none",
-        variants[variant],
-        sizes[size],
-        className
-      )}
+      className={buttonVariants({ variant, size, className })}
       {...props}
     />
   )

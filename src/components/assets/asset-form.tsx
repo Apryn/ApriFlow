@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
+import { Alert } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { createAsset, updateAsset, type ActionState } from "@/actions/asset.actions";
 import { ASSET_TYPES } from "@/lib/constants/asset-types";
@@ -35,12 +36,10 @@ export function AssetForm({ asset }: AssetFormProps) {
 
   return (
     <form action={formAction} className="space-y-4">
-      {state.error && (
-        <div className="rounded-xl bg-zinc-950 px-4 py-3 text-sm text-red-400 border-2 border-red-500/50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold">{state.error}</div>
-      )}
+      {state.error && <Alert variant="error">{state.error}</Alert>}
 
       <div>
-        <Label htmlFor="name">Nama aset</Label>
+        <Label htmlFor="name">Nama Aset</Label>
         <Input
           id="name"
           name="name"
@@ -51,7 +50,7 @@ export function AssetForm({ asset }: AssetFormProps) {
       </div>
 
       <div>
-        <Label htmlFor="type">Jenis aset</Label>
+        <Label htmlFor="type">Jenis Aset</Label>
         <Select id="type" name="type" defaultValue={asset?.type ?? "bank"}>
           {ASSET_TYPES.map((t) => (
             <option key={t.value} value={t.value}>
@@ -62,7 +61,7 @@ export function AssetForm({ asset }: AssetFormProps) {
       </div>
 
       <div>
-        <Label htmlFor="value">Nilai saat ini</Label>
+        <Label htmlFor="value">Nilai Saat Ini</Label>
         <Input
           id="value"
           inputMode="numeric"
@@ -75,14 +74,14 @@ export function AssetForm({ asset }: AssetFormProps) {
       </div>
 
       <div>
-        <Label htmlFor="is_liquid">Aset likuid?</Label>
+        <Label htmlFor="is_liquid">Likuiditas</Label>
         <Select
           id="is_liquid"
           name="is_liquid"
           defaultValue={asset?.is_liquid ? "true" : "false"}
         >
-          <option value="true">Ya — bisa dicairkan cepat</option>
-          <option value="false">Tidak</option>
+          <option value="true">Likuid (mudah dicairkan segera)</option>
+          <option value="false">Non-likuid (investasi jangka panjang)</option>
         </Select>
       </div>
 
@@ -91,12 +90,12 @@ export function AssetForm({ asset }: AssetFormProps) {
         <Textarea
           id="note"
           name="note"
-          placeholder="Contoh: rekening utama harian"
+          placeholder="Contoh: Rekening utama harian"
           defaultValue={asset?.note ?? ""}
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full shadow-[3px_3px_0px_0px_#000]" disabled={pending}>
+      <Button type="submit" size="md" className="w-full mt-2" disabled={pending}>
         {pending ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin mr-1" />

@@ -8,12 +8,12 @@ export default async function AIChatPage() {
   if (!user) redirect("/login");
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
-        title="AI Chat Pencatatan"
-        subtitle="Tulis pengeluaran atau pemasukan secara natural menggunakan bahasa sehari-hari."
+        title="Tanya AI & Catat Cepat"
+        subtitle="Ketik bahasa sehari-hari, scan struk belanja, atau tanyakan simulasi keputusan finansial."
       />
       <AITransactionInput />
-    </>
+    </div>
   );
 }

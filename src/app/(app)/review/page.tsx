@@ -29,15 +29,15 @@ export default async function ReviewPage() {
   const pendingTransactions = (pendingRes.data ?? []) as TransactionWithCategory[];
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
-        title="Review Transaksi"
-        subtitle="Verifikasi, edit, konfirmasi, atau abaikan draf transaksi yang dibuat oleh AI."
+        title="Review Draf Transaksi"
+        subtitle="Verifikasi, edit, atau setujui draf transaksi dari AI chat, scan struk, atau impor bank."
       />
       <PendingTransactionList
         initialTransactions={pendingTransactions}
         categories={categories}
       />
-    </>
+    </div>
   );
 }

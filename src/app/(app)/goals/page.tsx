@@ -21,15 +21,13 @@ export default async function GoalsPage() {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
         title="Target Keuangan (Goals)"
         subtitle="Pantau progres pencapaian tabungan dan impian Anda."
       />
 
-      <div className="mt-4">
-        <GoalManagerForm initialGoals={(goals ?? []) as Goal[]} />
-      </div>
-    </>
+      <GoalManagerForm initialGoals={(goals ?? []) as Goal[]} />
+    </div>
   );
 }

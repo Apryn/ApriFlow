@@ -2,116 +2,66 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import {
-  Home,
-  PlusCircle,
-  ArrowLeftRight,
-  Wallet,
-  Settings,
-  Sparkles,
-  ClipboardList,
-  History,
-} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { usePendingCount } from "@/components/providers/pending-count-provider";
+import { PLANNING_NAV, PRIMARY_NAV, SETTINGS_NAV, isNavActive, type NavItem } from "@/lib/navigation";
 import { VisibilityToggle } from "./visibility-toggle";
+import { Logo } from "./logo";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [pendingCount, setPendingCount] = useState(0);
-  const [userId, setUserId] = useState<string | null>(null);
-  const supabase = createClient();
+  const pendingCount = usePendingCount();
 
-  useEffect(() => {
-    async function getUserId() {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUserId(session.user.id);
-        } else {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) setUserId(user.id);
-        }
-      } catch (err) {
-        console.error("Error getting user session:", err);
-      }
-    }
-    getUserId();
-  }, [supabase]);
-
-  useEffect(() => {
-    if (!userId) return;
-
-    async function fetchPendingCount() {
-      try {
-        const { count } = await supabase
-          .from("transactions")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId as string)
-          .eq("status", "pending_review")
-          .is("deleted_at", null);
-
-        setPendingCount(count ?? 0);
-      } catch (err) {
-        console.error("Error fetching pending count:", err);
-      }
-    }
-
-    fetchPendingCount();
-  }, [supabase, pathname, userId]);
-
-  const navItems = [
-    { href: "/", label: "Dashboard", icon: Home },
-    { href: "/ai-chat", label: "Tanya AI (Chat)", icon: Sparkles },
-    { href: "/review", label: "Review Draf", icon: ClipboardList, badge: pendingCount > 0 ? pendingCount : undefined },
-    { href: "/tambah", label: "Tambah Cepat", icon: PlusCircle },
-    { href: "/transaksi", label: "Transaksi", icon: ArrowLeftRight },
-    { href: "/history", label: "Riwayat Bulanan", icon: History },
-    { href: "/aset", label: "Aset", icon: Wallet },
-    { href: "/settings", label: "Settings", icon: Settings },
-  ];
+  const renderItem = ({ href, label, icon: Icon, showPendingBadge }: NavItem) => {
+    const active = isNavActive(pathname, href);
+    const badge = showPendingBadge && pendingCount > 0 ? pendingCount : null;
+    return (
+      <Link
+        key={href}
+        href={href}
+        className={cn(
+          "flex items-center gap-3 rounded-xl border-2 px-3 py-2 text-sm font-medium transition-colors",
+          active
+            ? "border-black bg-teal-400 font-semibold text-black shadow-nb-sm"
+            : "border-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+        )}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        <span className="flex-1 truncate">{label}</span>
+        {badge !== null && (
+          <span
+            className={cn(
+              "tabular flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold",
+              active ? "bg-black text-teal-300" : "bg-teal-400 text-black"
+            )}
+          >
+            {badge}
+          </span>
+        )}
+      </Link>
+    );
+  };
 
   return (
-    <aside className="hidden w-56 shrink-0 border-r-2 border-black bg-zinc-900 md:block">
-      <div className="px-4 py-6 flex items-center justify-between gap-2">
-        <Link href="/" className="block">
-          <span className="text-xl font-black tracking-tight text-teal-400">ApriFlow</span>
-          <p className="mt-0.5 text-xs text-zinc-400">Cash flow pribadi</p>
+    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r-2 border-black bg-zinc-900 md:flex">
+      <div className="flex items-center justify-between gap-2 px-4 py-5">
+        <Link href="/" aria-label="Beranda">
+          <Logo withTagline />
         </Link>
         <VisibilityToggle />
       </div>
 
-      <nav className="space-y-1.5 px-3">
-        {navItems.map(({ href, label, icon: Icon, badge }) => {
-          const isActive = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all border-2",
-                isActive
-                  ? "bg-teal-400 text-black border-black shadow-[2px_2px_0px_0px_#000]"
-                  : "text-zinc-400 border-transparent hover:bg-zinc-800 hover:text-zinc-100"
-              )}
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              <span className="flex-1 truncate">{label}</span>
-              {badge !== undefined && (
-                <span className={cn(
-                  "flex h-5 min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-extrabold shrink-0",
-                  isActive
-                    ? "bg-black text-white"
-                    : "bg-teal-400 text-black border border-black shadow-[1px_1px_0px_0px_#000]"
-                )}>
-                  {badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-4">
+        <div className="space-y-1">{PRIMARY_NAV.map(renderItem)}</div>
+        <div className="space-y-1">
+          <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+            Perencanaan
+          </p>
+          {PLANNING_NAV.map(renderItem)}
+        </div>
       </nav>
+
+      <div className="border-t-2 border-black p-3">{renderItem(SETTINGS_NAV)}</div>
     </aside>
   );
 }

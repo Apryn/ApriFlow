@@ -11,15 +11,13 @@ export default async function HistoryPage() {
   const historyData = await getMonthlyHistory(user.id, 6);
 
   return (
-    <>
+    <div className="space-y-4">
       <PageHeader
         title="Riwayat Bulanan"
-        subtitle="Cek pengeluaran bulan kemarin, bandingkan arus kas, dan pantau tren keuangan Anda."
+        subtitle="Cek pengeluaran bulan kemarin, perbandingan arus kas, dan tren keuangan."
       />
 
-      <div className="mt-4">
-        <MonthlyHistoryView data={historyData} />
-      </div>
-    </>
+      <MonthlyHistoryView data={historyData} />
+    </div>
   );
 }

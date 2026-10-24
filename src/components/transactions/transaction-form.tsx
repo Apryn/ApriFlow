@@ -3,6 +3,8 @@
 import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
+import { TypeToggle, type TxType } from "@/components/ui/type-toggle";
+import { Alert } from "@/components/ui/alert";
 import { createTransaction, updateTransaction, type ActionState } from "@/actions/transaction.actions";
 import { PAYMENT_METHODS } from "@/lib/constants/payment-methods";
 import { formatRupiahInput, parseRupiahInput } from "@/lib/utils/currency";
@@ -29,7 +31,9 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
 
   const [state, formAction, pending] = useActionState(boundAction, initialState);
 
-  const [type, setType] = useState<"income" | "expense">(transaction?.type ?? "expense");
+  const [type, setType] = useState<TxType>(
+    (transaction?.type as TxType) ?? "expense"
+  );
   const [amountDisplay, setAmountDisplay] = useState(
     transaction ? formatRupiahInput(transaction.amount) : ""
   );
@@ -48,36 +52,11 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
 
   return (
     <form action={formAction} className="space-y-4">
-      {state.error && (
-        <div className="rounded-xl bg-zinc-950 px-4 py-3 text-sm text-red-400 border-2 border-red-500/50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] font-bold">{state.error}</div>
-      )}
+      {state.error && <Alert variant="error">{state.error}</Alert>}
 
       <div>
-        <Label>Tipe</Label>
-        <div className="mt-1.5 grid grid-cols-2 gap-2">
-          {(["expense", "income"] as const).map((t) => (
-            <label
-              key={t}
-              className={`flex cursor-pointer items-center justify-center rounded-xl border-2 py-2.5 text-sm font-bold transition-all ${
-                type === t
-                  ? t === "expense"
-                    ? "border-black bg-rose-500 text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none"
-                    : "border-black bg-teal-400 text-black shadow-[2px_2px_0px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] active:shadow-none"
-                  : "border-zinc-800 bg-zinc-950 text-zinc-400 hover:bg-zinc-900"
-              }`}
-            >
-              <input
-                type="radio"
-                name="type"
-                value={t}
-                checked={type === t}
-                onChange={() => setType(t)}
-                className="sr-only"
-              />
-              {t === "expense" ? "Pengeluaran" : "Pemasukan"}
-            </label>
-          ))}
-        </div>
+        <Label>Tipe Transaksi</Label>
+        <TypeToggle value={type} onChange={setType} />
       </div>
 
       <div>
@@ -128,7 +107,7 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
       </div>
 
       <div>
-        <Label htmlFor="payment_method">Metode pembayaran</Label>
+        <Label htmlFor="payment_method">Metode Pembayaran</Label>
         <Select
           id="payment_method"
           name="payment_method"
@@ -143,7 +122,7 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
       </div>
 
       <div>
-        <Label htmlFor="merchant">Merchant (opsional)</Label>
+        <Label htmlFor="merchant">Merchant / Tempat (opsional)</Label>
         <Input
           id="merchant"
           name="merchant"
@@ -157,12 +136,12 @@ export function TransactionForm({ categories, transaction, redirectTo }: Transac
         <Textarea
           id="note"
           name="note"
-          placeholder="Catatan tambahan..."
+          placeholder="Keterangan transaksi..."
           defaultValue={transaction?.note ?? ""}
         />
       </div>
 
-      <Button type="submit" size="lg" className="w-full shadow-[3px_3px_0px_0px_#000]" disabled={pending}>
+      <Button type="submit" size="md" className="w-full mt-2" disabled={pending}>
         {pending ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin mr-1" />
