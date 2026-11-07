@@ -7,7 +7,7 @@ import { syncMandatoryExpensesForMonth } from "@/lib/db/mandatory-expenses";
 import { getUser } from "@/lib/supabase/server";
 import { getCurrentMonthRange, formatMonthYear } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X } from "lucide-react";
+import { Plus, X, ArrowDownUp } from "lucide-react";
 import { redirect } from "next/navigation";
 import { TransactionFilterBar } from "@/components/transactions/transaction-filter-bar";
 import { MonthNavigator } from "@/components/layout/month-navigator";
@@ -76,12 +76,20 @@ export default async function TransaksiPage({ searchParams }: TransaksiPageProps
           </div>
         }
         action={
-          <Link href="/tambah">
-            <Button size="sm">
-              <Plus className="h-4 w-4" />
-              Catat
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/backup" title="Impor / Ekspor Data">
+              <Button size="sm" variant="outline" className="border-zinc-800 text-zinc-300 hover:text-zinc-100 flex items-center gap-1.5">
+                <ArrowDownUp className="h-3.5 w-3.5 text-teal-400" />
+                <span className="hidden xs:inline text-xs">Impor/Ekspor</span>
+              </Button>
+            </Link>
+            <Link href="/tambah">
+              <Button size="sm">
+                <Plus className="h-4 w-4" />
+                Catat
+              </Button>
+            </Link>
+          </div>
         }
       />
 

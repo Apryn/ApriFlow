@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowDownUp } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -46,6 +46,24 @@ export default async function SettingsPage() {
             );
           })}
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider px-1">Data & Cadangan</h2>
+        <Link href="/backup">
+          <Card className="p-3.5 flex items-center justify-between hover:bg-zinc-800/50 transition-colors border-teal-500/30">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400">
+                <ArrowDownUp className="h-4 w-4" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm text-zinc-100">Transfer & Cadangan Data</p>
+                <p className="text-xs text-zinc-500">Impor & ekspor CSV/JSON antar HP tanpa miss data</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-zinc-600" />
+          </Card>
+        </Link>
       </div>
 
       <Card className="p-4 space-y-1">
